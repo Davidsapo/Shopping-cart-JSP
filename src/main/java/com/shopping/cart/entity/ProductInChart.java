@@ -9,7 +9,7 @@ public class ProductInChart {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private long id;
-    @OneToOne
+    @ManyToOne
     private Product product;
     private int quantity;
 

@@ -11,8 +11,6 @@ public class Product {
     private long id;
     private String name;
     private double price;
-    private int quantity;
-    private byte[] image;
 
     public long getId() {
         return id;
@@ -38,29 +36,11 @@ public class Product {
         this.price = price;
     }
 
-    public int getQuantity() {
-        return quantity;
-    }
-
-    public void setQuantity(int quantity) {
-        this.quantity = quantity;
-    }
-
-    public byte[] getImage() {
-        return image;
-    }
-
-    public void setImage(byte[] image) {
-        this.image = image;
-    }
-
     @Override
     public String toString() {
         return "Product{" +
                 "name='" + name + '\'' +
                 ", price=" + price +
-                ", quantity=" + quantity +
-                ", image=" + Arrays.toString(image) +
                 '}';
     }
 }
