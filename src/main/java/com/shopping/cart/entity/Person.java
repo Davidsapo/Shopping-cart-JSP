@@ -12,8 +12,8 @@ public class Person {
     private String name;
     private String surname;
     private String email;
-    @OneToMany
-    private List<Cart> chart;
+    @ElementCollection
+    private List<Cart> carts;
 
     public long getId() {
         return id;
@@ -47,12 +47,16 @@ public class Person {
         this.email = email;
     }
 
-    public List<Cart> getChart() {
-        return chart;
+    public List<Cart> getCarts() {
+        return carts;
     }
 
-    public void setChart(List<Cart> chart) {
-        this.chart = chart;
+    public void setCarts(List<Cart> carts) {
+        this.carts = carts;
+    }
+
+    public void addCart(Cart cart){
+        carts.add(cart);
     }
 
     @Override
@@ -62,7 +66,7 @@ public class Person {
                 ", name='" + name + '\'' +
                 ", surname='" + surname + '\'' +
                 ", email='" + email + '\'' +
-                ", chart=" + chart +
+                ", chart=" + carts +
                 '}';
     }
 }

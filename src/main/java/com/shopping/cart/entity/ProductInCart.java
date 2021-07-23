@@ -4,7 +4,7 @@ import javax.persistence.*;
 
 @Entity
 @Embeddable
-public class ProductInChart {
+public class ProductInCart {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
@@ -12,6 +12,8 @@ public class ProductInChart {
     @ManyToOne
     private Product product;
     private int quantity;
+
+
 
     public long getId() {
         return id;
@@ -37,12 +39,5 @@ public class ProductInChart {
         this.quantity = quantity;
     }
 
-    @Override
-    public String toString() {
-        return "ProductInChart{" +
-                "id=" + id +
-                ", product=" + product +
-                ", quantity=" + quantity +
-                '}';
-    }
+
 }

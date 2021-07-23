@@ -5,18 +5,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
+@Embeddable
 public class Cart {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private long id;
     @ElementCollection
-    private List<ProductInChart> products;
-    @ManyToOne
-    private Person person;
+    private List<ProductInCart> products;
+    private long personId;
     private double totalPrice;
 
-    public void addProduct(ProductInChart product) {
+    public void addProduct(ProductInCart product) {
         if (products == null) {
             products = new ArrayList<>();
         }
@@ -24,7 +24,7 @@ public class Cart {
         countTotal();
     }
 
-    public void removeProduct(Product product) {
+    public void removeProduct(ProductInCart product) {
         if (products != null) {
             products.remove(product);
             countTotal();
@@ -33,7 +33,7 @@ public class Cart {
 
     private void countTotal() {
         totalPrice = 0;
-        for (ProductInChart productInChart : products) {
+        for (ProductInCart productInChart : products) {
             totalPrice += productInChart.getProduct().getPrice() * productInChart.getQuantity();
         }
     }
@@ -46,20 +46,20 @@ public class Cart {
         this.id = id;
     }
 
-    public List<ProductInChart> getProducts() {
+    public List<ProductInCart> getProducts() {
         return products;
     }
 
-    public void setProducts(List<ProductInChart> products) {
+    public void setProducts(List<ProductInCart> products) {
         this.products = products;
     }
 
-    public Person getPerson() {
-        return person;
+    public long getPersonId() {
+        return personId;
     }
 
-    public void setPerson(Person person) {
-        this.person = person;
+    public void setPersonId(long personId) {
+        this.personId = personId;
     }
 
     public double getTotalPrice() {
@@ -72,10 +72,11 @@ public class Cart {
 
     @Override
     public String toString() {
-        return "Chart{" +
+        return "Cart{" +
                 "id=" + id +
                 ", products=" + products +
-                ", person=" + person +
+                ", personId=" + personId +
+                ", totalPrice=" + totalPrice +
                 '}';
     }
 }
