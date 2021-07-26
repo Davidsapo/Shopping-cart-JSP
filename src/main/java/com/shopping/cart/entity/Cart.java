@@ -1,9 +1,12 @@
 package com.shopping.cart.entity;
 
+import lombok.Data;
+
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
+@Data
 @Entity
 @Embeddable
 public class Cart {
@@ -36,47 +39,5 @@ public class Cart {
         for (ProductInCart productInChart : products) {
             totalPrice += productInChart.getProduct().getPrice() * productInChart.getQuantity();
         }
-    }
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public List<ProductInCart> getProducts() {
-        return products;
-    }
-
-    public void setProducts(List<ProductInCart> products) {
-        this.products = products;
-    }
-
-    public long getPersonId() {
-        return personId;
-    }
-
-    public void setPersonId(long personId) {
-        this.personId = personId;
-    }
-
-    public double getTotalPrice() {
-        return totalPrice;
-    }
-
-    public void setTotalPrice(double totalPrice) {
-        this.totalPrice = totalPrice;
-    }
-
-    @Override
-    public String toString() {
-        return "Cart{" +
-                "id=" + id +
-                ", products=" + products +
-                ", personId=" + personId +
-                ", totalPrice=" + totalPrice +
-                '}';
     }
 }
