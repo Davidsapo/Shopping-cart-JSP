@@ -3,5 +3,6 @@ Shopping cart REST API
 ### Used:
 * Java core
 * Spring Boot
+* Spring JPA
 * Maven
-* SQLite
+* H2 database
