@@ -1,4 +1,4 @@
-# Shopping-cart
+# Shopping-cart-with-Spring_JPA
 Shopping cart REST API
 ### Used:
 * Java core
