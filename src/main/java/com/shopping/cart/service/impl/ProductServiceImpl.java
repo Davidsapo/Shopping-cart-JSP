@@ -5,6 +5,7 @@ import com.shopping.cart.exceptions.ProductException;
 import com.shopping.cart.repository.ProductRepository;
 import com.shopping.cart.service.ProductService;
 import com.shopping.cart.validator.ProductValidator;
+import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.stereotype.Service;
@@ -52,7 +53,12 @@ public class ProductServiceImpl implements ProductService {
     public String delete(long id) {
         if (!productRepository.existsById(id))
             return "No product with id " + id;
-        productRepository.deleteById(id);
+
+        try {
+            productRepository.deleteById(id);
+        } catch (Exception exception) {
+            throw new ProductException("Can not delete product because it presents in carts!");
+        }
         return "Deleted";
     }
 }

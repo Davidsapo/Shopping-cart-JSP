@@ -21,8 +21,8 @@ public class PersonDTO {
         firstName = person.getFirstName();
         lastName = person.getLastName();
         email = person.getEmail();
-        carts = new ArrayList<>();
         if (person.getCarts() != null) {
+            carts = new ArrayList<>();
             for (Cart cart : person.getCarts()) {
                 carts.add(new CartDTO(cart));
             }

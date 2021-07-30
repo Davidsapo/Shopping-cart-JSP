@@ -30,7 +30,7 @@ public class Person {
     @Column(nullable = false)
     private String email;
 
-    @OneToMany
+    @OneToMany(orphanRemoval = true, mappedBy = "person", cascade = CascadeType.REMOVE)
     private List<Cart> carts;
 
     public void addCart(Cart cart) {

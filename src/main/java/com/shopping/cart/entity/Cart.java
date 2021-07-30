@@ -1,6 +1,10 @@
 package com.shopping.cart.entity;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -8,6 +12,7 @@ import java.util.List;
 
 @Data
 @Entity
+@NoArgsConstructor
 public class Cart {
 
     @Id
@@ -22,10 +27,14 @@ public class Cart {
     @ManyToOne
     private Person person;
 
-    @OneToMany
+    @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL)
     private List<ProductInCart> products;
 
     private Double totalPrice;
+
+    public Cart(Person person) {
+        this.person = person;
+    }
 
     public void addProduct(ProductInCart product) {
         if (products == null) {
@@ -35,17 +44,26 @@ public class Cart {
         countTotal();
     }
 
-    public void removeProduct(ProductInCart product) {
-        if (products != null) {
-            products.remove(product);
-            countTotal();
+    public void removeProduct(Long productId) {
+        for (ProductInCart productInCart : products) {
+            if (productInCart.getProduct().getId().equals(productId)) {
+                products.remove(productInCart);
+                countTotal();
+                return;
+            }
         }
     }
 
     private void countTotal() {
         totalPrice = 0.0;
         for (ProductInCart productInChart : products) {
-            totalPrice += productInChart.getProduct().getPrice() * productInChart.getQuantity();
+            totalPrice += productInChart.getPrice();
         }
+    }
+
+    public Double getTotalPrice() {
+        if (products != null)
+            countTotal();
+        return totalPrice;
     }
 }

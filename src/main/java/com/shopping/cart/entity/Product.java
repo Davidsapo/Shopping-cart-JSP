@@ -3,6 +3,7 @@ package com.shopping.cart.entity;
 import lombok.Data;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Data
 @Entity
