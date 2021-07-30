@@ -3,7 +3,6 @@ package com.shopping.cart.controller;
 import com.shopping.cart.entity.Product;
 import com.shopping.cart.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

@@ -12,7 +12,7 @@ public class ProductValidator {
     @Autowired
     private ProductRepository productRepository;
 
-    public boolean validate(Product product){
+    public boolean validate(Product product) {
         if (product.getName().isEmpty()) {
             throw new ProductException("Product name can not be empty!");
         }

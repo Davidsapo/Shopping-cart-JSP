@@ -5,9 +5,7 @@ import com.shopping.cart.exceptions.ProductException;
 import com.shopping.cart.repository.ProductRepository;
 import com.shopping.cart.service.ProductService;
 import com.shopping.cart.validator.ProductValidator;
-import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

@@ -33,7 +33,4 @@ public class Person {
     @OneToMany(orphanRemoval = true, mappedBy = "person", cascade = CascadeType.REMOVE)
     private List<Cart> carts;
 
-    public void addCart(Cart cart) {
-        carts.add(cart);
-    }
 }

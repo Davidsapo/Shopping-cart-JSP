@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class PersonServiceImpl implements PersonService {
@@ -45,14 +44,14 @@ public class PersonServiceImpl implements PersonService {
         if (surname != null && surname.isEmpty()) {
             throw new PersonException("Surname can not be empty!");
         }
-        Optional<Person> optionalPerson = personRepository.findById(id);
+        Person person = personRepository.getById(id);
         if (name != null) {
-            optionalPerson.get().setFirstName(name);
+            person.setFirstName(name);
         }
         if (surname != null) {
-            optionalPerson.get().setLastName(surname);
+            person.setLastName(surname);
         }
-        return optionalPerson.get();
+        return person;
     }
 
     @Override
