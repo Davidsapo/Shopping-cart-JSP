@@ -37,8 +37,8 @@ public class CartServiceImpl implements CartService {
             throw new CartException("Person with id " + personId + " does not exists.");
         }
         Cart newCart = new Cart();
-        newCart.setPersonId(personId);
         Person person = personRepository.getById(personId);
+        newCart.setPerson(person);
         person.addCart(newCart);
         cartRepository.save(newCart);
         return newCart;
@@ -90,12 +90,12 @@ public class CartServiceImpl implements CartService {
             throw new CartException("Product with id " + productId + " does not exists.");
         }
         Cart cart = cartRepository.getById(cartId);
-        for (ProductInCart productInCart : cart.getProducts()) {
+        /*for (ProductInCart productInCart : cart.getProducts()) {
             if (productInCart.getProduct().getId() == productId) {
                 cart.removeProduct(productInCart);
                 break;
             }
-        }
+        }*/
         return cart;
     }
 

@@ -15,10 +15,10 @@ public class PersonValidator {
     private static final String EMAIL_PATTERN = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,6}$";
 
     public boolean validate(Person person) {
-        if (person.getName().isEmpty()) {
+        if (person.getFirstName().isEmpty()) {
             throw new PersonException("Name can not be empty!");
         }
-        if (person.getSurname().isEmpty()) {
+        if (person.getLastName().isEmpty()) {
             throw new PersonException("Surname can not be empty!");
         }
         if (!person.getEmail().matches(EMAIL_PATTERN)) {

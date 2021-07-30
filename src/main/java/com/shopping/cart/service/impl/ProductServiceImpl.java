@@ -6,6 +6,7 @@ import com.shopping.cart.repository.ProductRepository;
 import com.shopping.cart.service.ProductService;
 import com.shopping.cart.validator.ProductValidator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,7 +36,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Transactional
     @Override
-    public Product updatePrice(long id, int price) {
+    public Product updatePrice(long id, Double price) {
         Optional<Product> productOptional = productRepository.findById(id);
         if (productOptional.isEmpty()) {
             throw new ProductException("No product with id " + id);

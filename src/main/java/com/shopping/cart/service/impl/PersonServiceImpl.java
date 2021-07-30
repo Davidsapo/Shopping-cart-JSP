@@ -47,10 +47,10 @@ public class PersonServiceImpl implements PersonService {
         }
         Optional<Person> optionalPerson = personRepository.findById(id);
         if (name != null) {
-            optionalPerson.get().setName(name);
+            optionalPerson.get().setFirstName(name);
         }
         if (surname != null) {
-            optionalPerson.get().setSurname(surname);
+            optionalPerson.get().setLastName(surname);
         }
         return optionalPerson.get();
     }
