@@ -7,10 +7,16 @@ import com.shopping.cart.repository.CartRepository;
 import com.shopping.cart.repository.PersonRepository;
 import com.shopping.cart.repository.ProductRepository;
 import com.shopping.cart.service.CartService;
+import com.shopping.cart.validator.CartValidator;
+import com.shopping.cart.validator.PersonValidator;
+import com.shopping.cart.validator.ProductValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
+import java.text.Bidi;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -25,11 +31,18 @@ public class CartServiceImpl implements CartService {
     @Autowired
     private ProductRepository productRepository;
 
+    @Autowired
+    private PersonValidator personValidator;
+
+    @Autowired
+    private ProductValidator productValidator;
+
+    @Autowired
+    private CartValidator cartValidator;
+
     @Override
     public Cart addCart(long personId) {
-        if (!personRepository.existsById(personId)) {
-            throw new CartException("Person with id " + personId + " does not exists.");
-        }
+        personValidator.checkIfExists(personId);
         Cart newCart = new Cart(personRepository.getById(personId));
         cartRepository.save(newCart);
         return newCart;
@@ -43,45 +56,38 @@ public class CartServiceImpl implements CartService {
     @Transactional
     @Override
     public Cart addProductToCart(Long cartId, Long productId, Integer quantity) {
-        if (!cartRepository.existsById(cartId)) {
-            throw new CartException("Cart with id " + cartId + " does not exists.");
-        }
-        if (productId == null || quantity == null) {
-            throw new CartException("Required parameters: productId, quantity");
-        }
-        if (!productRepository.existsById(productId)) {
-            throw new CartException("Product with id " + productId + " does not exists.");
-        }
-        if (quantity < 1) {
-            throw new CartException("Quantity can not be less than 1!");
-        }
+        cartValidator.checkIfExists(cartId);
+        productValidator.checkIfExists(productId);
+        cartValidator.checkProductQuantity(quantity);
+
         Cart cart = cartRepository.getById(cartId);
-        cart.addProduct(new ProductInCart(productRepository.getById(productId), quantity));
+        List<ProductInCart> products = cart.getProducts();
+        products.add(new ProductInCart(productRepository.getById(productId), quantity));
+        cart.refreshTotalPrice();
         return cart;
     }
 
     @Transactional
     @Override
     public Cart deleteProductFromCart(Long cartId, Long productId) {
-        if (!cartRepository.existsById(cartId)) {
-            throw new CartException("Cart with id " + cartId + " does not exists.");
-        }
-        if (productId == null) {
-            throw new CartException("Required parameters: productId");
-        }
-        if (!productRepository.existsById(productId)) {
-            throw new CartException("Product with id " + productId + " does not exists.");
-        }
+        cartValidator.checkIfExists(cartId);
+        productValidator.checkIfExists(productId);
+
         Cart cart = cartRepository.getById(cartId);
-        cart.removeProduct(productId);
+        List<ProductInCart> products = cart.getProducts();
+        for (ProductInCart productInCart : products) {
+            if (productInCart.getProduct().getId().equals(productId)) {
+                products.remove(productInCart);
+                cart.refreshTotalPrice();
+                break;
+            }
+        }
         return cart;
     }
 
     @Override
     public String deleteById(long id) {
-        if (!cartRepository.existsById(id)) {
-            return "No cart with id " + id;
-        }
+        cartValidator.checkIfExists(id);
         cartRepository.deleteById(id);
         return "Deleted";
     }

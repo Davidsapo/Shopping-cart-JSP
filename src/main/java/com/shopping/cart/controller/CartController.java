@@ -2,6 +2,7 @@ package com.shopping.cart.controller;
 
 import com.shopping.cart.dto.CartDTO;
 import com.shopping.cart.entity.Cart;
+import com.shopping.cart.exceptions.CartException;
 import com.shopping.cart.service.CartService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -33,11 +34,17 @@ public class CartController {
 
     @PutMapping("/{cartId}/add/product")
     public ResponseEntity<CartDTO> addProductToCart(@PathVariable Long cartId, Long productId, Integer quantity) {
+        if (productId == null || quantity == null) {
+            throw new CartException("Required parameters: productId, quantity");
+        }
         return ResponseEntity.ok(new CartDTO(cartService.addProductToCart(cartId, productId, quantity)));
     }
 
     @PutMapping("/{cartId}/delete/product")
     public ResponseEntity<CartDTO> deleteProductFromCart(@PathVariable Long cartId, Long productId) {
+        if (productId == null) {
+            throw new CartException("Required parameters: productId");
+        }
         return ResponseEntity.ok(new CartDTO(cartService.deleteProductFromCart(cartId, productId)));
     }
 

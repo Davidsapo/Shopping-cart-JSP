@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class ProductServiceImpl implements ProductService {
@@ -36,22 +35,16 @@ public class ProductServiceImpl implements ProductService {
     @Transactional
     @Override
     public Product updatePrice(long id, Double price) {
-        Optional<Product> productOptional = productRepository.findById(id);
-        if (productOptional.isEmpty()) {
-            throw new ProductException("No product with id " + id);
-        }
-        if (price < 0) {
-            throw new ProductException("Product price can not be less then 0!");
-        }
-        productOptional.get().setPrice(price);
-        return productOptional.get();
+        productValidator.checkIfExists(id);
+        productValidator.validatePrice(price);
+        Product product = productRepository.getById(id);
+        product.setPrice(price);
+        return product;
     }
 
     @Override
     public String delete(long id) {
-        if (!productRepository.existsById(id))
-            return "No product with id " + id;
-
+       productValidator.checkIfExists(id);
         try {
             productRepository.deleteById(id);
         } catch (Exception exception) {

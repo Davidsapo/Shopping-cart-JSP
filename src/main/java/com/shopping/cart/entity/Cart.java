@@ -4,6 +4,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,42 +26,18 @@ public class Cart {
     private Person person;
 
     @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL)
-    private List<ProductInCart> products;
+    private List<ProductInCart> products = new ArrayList<>();
 
-    private Double totalPrice;
+    private BigDecimal totalPrice = BigDecimal.ZERO;
 
     public Cart(Person person) {
         this.person = person;
     }
 
-    public void addProduct(ProductInCart product) {
-        if (products == null) {
-            products = new ArrayList<>();
-        }
-        products.add(product);
-        countTotal();
-    }
-
-    public void removeProduct(Long productId) {
-        for (ProductInCart productInCart : products) {
-            if (productInCart.getProduct().getId().equals(productId)) {
-                products.remove(productInCart);
-                countTotal();
-                return;
-            }
-        }
-    }
-
-    private void countTotal() {
-        totalPrice = 0.0;
+    public void refreshTotalPrice() {
+        totalPrice = BigDecimal.ZERO;
         for (ProductInCart productInChart : products) {
-            totalPrice += productInChart.getPrice();
+            totalPrice = totalPrice.add(BigDecimal.valueOf(productInChart.getProduct().getPrice() * productInChart.getQuantity()));
         }
-    }
-
-    public Double getTotalPrice() {
-        if (products != null)
-            countTotal();
-        return totalPrice;
     }
 }

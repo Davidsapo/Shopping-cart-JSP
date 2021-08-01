@@ -16,12 +16,22 @@ public class ProductValidator {
         if (product.getName().isEmpty()) {
             throw new ProductException("Product name can not be empty!");
         }
-        if (product.getPrice() < 0) {
-            throw new ProductException("Product price can not be less then 0!");
-        }
         if (productRepository.findByName(product.getName()).isPresent()) {
             throw new ProductException("Product with such name is already exists!");
         }
+        validatePrice(product.getPrice());
         return true;
+    }
+
+    public void validatePrice(double price) {
+        if (price < 0) {
+            throw new ProductException("Product price can not be less then 0!");
+        }
+    }
+
+    public void checkIfExists(Long productId) {
+        if (!productRepository.existsById(productId)) {
+            throw new ProductException("No product with id " + productId);
+        }
     }
 }

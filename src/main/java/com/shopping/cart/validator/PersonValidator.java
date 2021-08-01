@@ -15,12 +15,8 @@ public class PersonValidator {
     private static final String EMAIL_PATTERN = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,6}$";
 
     public boolean validate(Person person) {
-        if (person.getFirstName().isEmpty()) {
-            throw new PersonException("Name can not be empty!");
-        }
-        if (person.getLastName().isEmpty()) {
-            throw new PersonException("Surname can not be empty!");
-        }
+        validateName(person.getFirstName());
+        validateSurname(person.getLastName());
         if (!person.getEmail().matches(EMAIL_PATTERN)) {
             throw new PersonException("Wrong email!");
         }
@@ -28,5 +24,23 @@ public class PersonValidator {
             throw new PersonException("Person with such email is already exists!");
         }
         return true;
+    }
+
+    public void checkIfExists(Long personID) {
+        if (!personRepository.existsById(personID)) {
+            throw new PersonException("No person with such id!");
+        }
+    }
+
+    public void validateName(String name) {
+        if (name != null && name.isEmpty()) {
+            throw new PersonException("Name can not be empty!");
+        }
+    }
+
+    public void validateSurname(String surname) {
+        if (surname != null && surname.isEmpty()) {
+            throw new PersonException("Surname can not be empty!");
+        }
     }
 }

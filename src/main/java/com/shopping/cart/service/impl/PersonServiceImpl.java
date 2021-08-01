@@ -35,15 +35,9 @@ public class PersonServiceImpl implements PersonService {
     @Transactional
     @Override
     public Person updatePerson(long id, String name, String surname) {
-        if (!personRepository.existsById(id)) {
-            throw new PersonException("No person with such id!");
-        }
-        if (name != null && name.isEmpty()) {
-            throw new PersonException("Name can not be empty!");
-        }
-        if (surname != null && surname.isEmpty()) {
-            throw new PersonException("Surname can not be empty!");
-        }
+        personValidator.checkIfExists(id);
+        personValidator.validateName(name);
+        personValidator.validateSurname(surname);
         Person person = personRepository.getById(id);
         if (name != null) {
             person.setFirstName(name);
@@ -56,9 +50,7 @@ public class PersonServiceImpl implements PersonService {
 
     @Override
     public String deletePerson(long id) {
-        if (!personRepository.existsById(id)) {
-            return "Person with id " + id + " does not exists.";
-        }
+        personValidator.checkIfExists(id);
         personRepository.deleteById(id);
         return "Deleted";
     }
