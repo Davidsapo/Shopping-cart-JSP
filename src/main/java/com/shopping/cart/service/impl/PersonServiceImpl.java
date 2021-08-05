@@ -1,5 +1,6 @@
 package com.shopping.cart.service.impl;
 
+import com.shopping.cart.entity.Cart;
 import com.shopping.cart.entity.Person;
 import com.shopping.cart.exceptions.PersonException;
 import com.shopping.cart.repository.PersonRepository;
@@ -21,10 +22,10 @@ public class PersonServiceImpl implements PersonService {
     private PersonValidator personValidator;
 
     @Override
-    public void addPerson(Person person) {
-        if (personValidator.validate(person)) {
-            personRepository.save(person);
-        }
+    public Person addPerson(Person person) {
+        personValidator.validate(person);
+        person.setCart(new Cart());
+        return personRepository.save(person);
     }
 
     @Override

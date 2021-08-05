@@ -1,11 +1,7 @@
 package com.shopping.cart.dto;
 
-import com.shopping.cart.entity.Cart;
 import com.shopping.cart.entity.Person;
 import lombok.Data;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Data
 public class PersonDTO {
@@ -14,18 +10,15 @@ public class PersonDTO {
     private String firstName;
     private String lastName;
     private String email;
-    private List<CartDTO> carts;
+    private CartDTO cart;
 
     public PersonDTO(Person person) {
         id = person.getId();
         firstName = person.getFirstName();
         lastName = person.getLastName();
         email = person.getEmail();
-        if (person.getCarts() != null) {
-            carts = new ArrayList<>();
-            for (Cart cart : person.getCarts()) {
-                carts.add(new CartDTO(cart));
-            }
+        if (person.getCart() != null) {
+            cart = new CartDTO(person.getCart());
         }
     }
 }

@@ -5,7 +5,6 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -22,22 +21,11 @@ public class Cart {
             generator = "cart_sequence")
     private Long id;
 
-    @ManyToOne
+    @OneToOne(mappedBy = "cart")
     private Person person;
 
-    @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL)
-    private List<ProductInCart> products = new ArrayList<>();
+    @OneToMany(mappedBy = "cart", orphanRemoval = true)
+    private List<CartItem> cartItems;
 
     private BigDecimal totalPrice = BigDecimal.ZERO;
-
-    public Cart(Person person) {
-        this.person = person;
-    }
-
-    public void refreshTotalPrice() {
-        totalPrice = BigDecimal.ZERO;
-        for (ProductInCart productInChart : products) {
-            totalPrice = totalPrice.add(BigDecimal.valueOf(productInChart.getProduct().getPrice() * productInChart.getQuantity()));
-        }
-    }
 }

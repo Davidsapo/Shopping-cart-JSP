@@ -19,8 +19,8 @@ public class PersonController {
 
     @PostMapping("add")
     public ResponseEntity<PersonDTO> add(@RequestBody Person person) {
-        personService.addPerson(person);
-        return ResponseEntity.ok(new PersonDTO(person));
+        PersonDTO personDTO = new PersonDTO(personService.addPerson(person));
+        return ResponseEntity.ok(personDTO);
     }
 
     @GetMapping("list")

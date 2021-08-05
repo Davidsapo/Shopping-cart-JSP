@@ -1,8 +1,8 @@
 package com.shopping.cart.service.impl;
 
 import com.shopping.cart.entity.Cart;
-import com.shopping.cart.entity.ProductInCart;
-import com.shopping.cart.exceptions.CartException;
+import com.shopping.cart.entity.CartItem;
+import com.shopping.cart.repository.CartItemRepository;
 import com.shopping.cart.repository.CartRepository;
 import com.shopping.cart.repository.PersonRepository;
 import com.shopping.cart.repository.ProductRepository;
@@ -14,9 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.math.BigDecimal;
-import java.text.Bidi;
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -32,6 +29,9 @@ public class CartServiceImpl implements CartService {
     private ProductRepository productRepository;
 
     @Autowired
+    private CartItemRepository cartItemRepository;
+
+    @Autowired
     private PersonValidator personValidator;
 
     @Autowired
@@ -42,10 +42,7 @@ public class CartServiceImpl implements CartService {
 
     @Override
     public Cart addCart(long personId) {
-        personValidator.checkIfExists(personId);
-        Cart newCart = new Cart(personRepository.getById(personId));
-        cartRepository.save(newCart);
-        return newCart;
+        return null;
     }
 
     @Override
@@ -61,9 +58,11 @@ public class CartServiceImpl implements CartService {
         cartValidator.checkProductQuantity(quantity);
 
         Cart cart = cartRepository.getById(cartId);
-        List<ProductInCart> products = cart.getProducts();
-        products.add(new ProductInCart(productRepository.getById(productId), quantity));
-        cart.refreshTotalPrice();
+        CartItem cartItem = new CartItem();
+        cartItem.setCart(cart);
+        cartItem.setProduct(productRepository.getById(productId));
+        cartItem.setQuantity(quantity);
+        cartItemRepository.save(cartItem);
         return cart;
     }
 
@@ -74,11 +73,11 @@ public class CartServiceImpl implements CartService {
         productValidator.checkIfExists(productId);
 
         Cart cart = cartRepository.getById(cartId);
-        List<ProductInCart> products = cart.getProducts();
-        for (ProductInCart productInCart : products) {
+        List<CartItem> products = cart.getCartItems();
+        for (CartItem productInCart : products) {
             if (productInCart.getProduct().getId().equals(productId)) {
                 products.remove(productInCart);
-                cart.refreshTotalPrice();
+                //cart.refreshTotalPrice();
                 break;
             }
         }
@@ -87,8 +86,6 @@ public class CartServiceImpl implements CartService {
 
     @Override
     public String deleteById(long id) {
-        cartValidator.checkIfExists(id);
-        cartRepository.deleteById(id);
-        return "Deleted";
+        return null;
     }
 }

@@ -1,16 +1,12 @@
 package com.shopping.cart.entity;
 
 import lombok.Data;
-import lombok.NoArgsConstructor;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
 
 @Data
-@NoArgsConstructor
 @Entity
-public class ProductInCart {
+public class CartItem {
 
     @Id
     @SequenceGenerator(
@@ -22,14 +18,11 @@ public class ProductInCart {
     private Long id;
 
     @ManyToOne
-    @OnDelete(action = OnDeleteAction.CASCADE)
+    private Cart cart;
+
+    @ManyToOne
     private Product product;
 
     @Column(nullable = false)
-    private int quantity;
-
-    public ProductInCart(Product product, int quantity) {
-        this.product = product;
-        this.quantity = quantity;
-    }
+    private Integer quantity;
 }

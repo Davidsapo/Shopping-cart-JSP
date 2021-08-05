@@ -19,7 +19,7 @@ public class ProductValidator {
         if (productRepository.findByName(product.getName()).isPresent()) {
             throw new ProductException("Product with such name is already exists!");
         }
-        validatePrice(product.getPrice());
+        validatePrice(product.getPrice().doubleValue());
         return true;
     }
 

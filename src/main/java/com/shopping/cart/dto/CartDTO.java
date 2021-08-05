@@ -1,7 +1,7 @@
 package com.shopping.cart.dto;
 
 import com.shopping.cart.entity.Cart;
-import com.shopping.cart.entity.ProductInCart;
+import com.shopping.cart.entity.CartItem;
 import lombok.Data;
 
 import java.math.BigDecimal;
@@ -18,11 +18,15 @@ public class CartDTO {
 
     public CartDTO(Cart cart) {
         id = cart.getId();
-        personId = cart.getPerson().getId();
+        if (cart.getPerson() != null) {
+            personId = cart.getPerson().getId();
+        }
         totalPrice = cart.getTotalPrice();
         products = new ArrayList<>();
-        for (ProductInCart productInCart : cart.getProducts()) {
-            products.add(new ProductInCartDTO(productInCart));
+        if (cart.getCartItems() != null) {
+            for (CartItem productInCart : cart.getCartItems()) {
+                products.add(new ProductInCartDTO(productInCart));
+            }
         }
     }
 }

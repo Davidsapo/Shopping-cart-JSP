@@ -14,7 +14,7 @@ public class PersonValidator {
 
     private static final String EMAIL_PATTERN = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,6}$";
 
-    public boolean validate(Person person) {
+    public void validate(Person person) {
         validateName(person.getFirstName());
         validateSurname(person.getLastName());
         if (!person.getEmail().matches(EMAIL_PATTERN)) {
@@ -23,7 +23,6 @@ public class PersonValidator {
         if (personRepository.findByEmail(person.getEmail()).isPresent()) {
             throw new PersonException("Person with such email is already exists!");
         }
-        return true;
     }
 
     public void checkIfExists(Long personID) {

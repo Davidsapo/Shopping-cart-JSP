@@ -3,7 +3,6 @@ package com.shopping.cart.entity;
 import lombok.Data;
 
 import javax.persistence.*;
-import java.util.List;
 
 @Data
 @Entity
@@ -30,6 +29,6 @@ public class Person {
     @Column(nullable = false)
     private String email;
 
-    @OneToMany(orphanRemoval = true, mappedBy = "person", cascade = CascadeType.REMOVE)
-    private List<Cart> carts;
+    @OneToOne(cascade = CascadeType.ALL, optional = false, orphanRemoval = true)
+    private Cart cart;
 }

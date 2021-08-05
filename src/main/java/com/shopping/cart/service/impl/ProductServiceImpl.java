@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Service
@@ -38,18 +39,14 @@ public class ProductServiceImpl implements ProductService {
         productValidator.checkIfExists(id);
         productValidator.validatePrice(price);
         Product product = productRepository.getById(id);
-        product.setPrice(price);
+        product.setPrice(BigDecimal.valueOf(price));
         return product;
     }
 
     @Override
     public String delete(long id) {
-       productValidator.checkIfExists(id);
-        try {
-            productRepository.deleteById(id);
-        } catch (Exception exception) {
-            throw new ProductException("Can not delete product because it presents in carts!");
-        }
+        productValidator.checkIfExists(id);
+        productRepository.deleteById(id);
         return "Deleted";
     }
 }
