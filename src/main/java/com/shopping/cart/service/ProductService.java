@@ -2,15 +2,16 @@ package com.shopping.cart.service;
 
 import com.shopping.cart.entity.Product;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 public interface ProductService {
 
-    void createProduct(Product product);
+    Product createProduct(Product product);
 
     List<Product> getProducts();
 
-    Product updatePrice(long id, Double price);
+    Product updatePrice(Long id, BigDecimal price);
 
-    String delete(long id);
+    void delete(Long id);
 }

@@ -6,25 +6,26 @@ import com.shopping.cart.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.math.BigDecimal;
+
 @Component
 public class ProductValidator {
 
     @Autowired
     private ProductRepository productRepository;
 
-    public boolean validate(Product product) {
+    public void validate(Product product) {
         if (product.getName().isEmpty()) {
             throw new ProductException("Product name can not be empty!");
         }
         if (productRepository.findByName(product.getName()).isPresent()) {
             throw new ProductException("Product with such name is already exists!");
         }
-        validatePrice(product.getPrice().doubleValue());
-        return true;
+        validatePrice(product.getPrice());
     }
 
-    public void validatePrice(double price) {
-        if (price < 0) {
+    public void validatePrice(BigDecimal price) {
+        if (price.doubleValue() < 0) {
             throw new ProductException("Product price can not be less then 0!");
         }
     }

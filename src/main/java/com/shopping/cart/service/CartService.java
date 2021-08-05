@@ -14,6 +14,6 @@ public interface CartService {
 
     Cart deleteProductFromCart(Long chartId, Long productId);
 
-    String deleteById(long id);
+    String deleteById(Long id);
 }
 

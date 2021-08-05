@@ -2,7 +2,6 @@ package com.shopping.cart.service.impl;
 
 import com.shopping.cart.entity.Cart;
 import com.shopping.cart.entity.Person;
-import com.shopping.cart.exceptions.PersonException;
 import com.shopping.cart.repository.PersonRepository;
 import com.shopping.cart.service.PersonService;
 import com.shopping.cart.validator.PersonValidator;
@@ -11,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class PersonServiceImpl implements PersonService {
@@ -35,24 +35,23 @@ public class PersonServiceImpl implements PersonService {
 
     @Transactional
     @Override
-    public Person updatePerson(long id, String name, String surname) {
+    public Person updatePerson(Long id, String name, String surname) {
         personValidator.checkIfExists(id);
         personValidator.validateName(name);
         personValidator.validateSurname(surname);
         Person person = personRepository.getById(id);
-        if (name != null) {
+        if (Objects.nonNull(name)) {
             person.setFirstName(name);
         }
-        if (surname != null) {
+        if (Objects.nonNull(surname)) {
             person.setLastName(surname);
         }
         return person;
     }
 
     @Override
-    public String deletePerson(long id) {
+    public void deletePerson(Long id) {
         personValidator.checkIfExists(id);
         personRepository.deleteById(id);
-        return "Deleted";
     }
 }

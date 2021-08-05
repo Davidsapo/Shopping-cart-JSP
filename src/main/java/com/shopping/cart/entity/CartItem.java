@@ -1,5 +1,6 @@
 package com.shopping.cart.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -17,6 +18,7 @@ public class CartItem {
             generator = "product_in_cart_sequence")
     private Long id;
 
+    @JsonIgnore
     @ManyToOne
     private Cart cart;
 

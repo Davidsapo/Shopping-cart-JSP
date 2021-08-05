@@ -1,7 +1,6 @@
 package com.shopping.cart.service.impl;
 
 import com.shopping.cart.entity.Product;
-import com.shopping.cart.exceptions.ProductException;
 import com.shopping.cart.repository.ProductRepository;
 import com.shopping.cart.service.ProductService;
 import com.shopping.cart.validator.ProductValidator;
@@ -22,10 +21,9 @@ public class ProductServiceImpl implements ProductService {
     private ProductValidator productValidator;
 
     @Override
-    public void createProduct(Product product) {
-        if (productValidator.validate(product)) {
-            productRepository.save(product);
-        }
+    public Product createProduct(Product product) {
+        productValidator.validate(product);
+        return productRepository.save(product);
     }
 
     @Override
@@ -35,18 +33,17 @@ public class ProductServiceImpl implements ProductService {
 
     @Transactional
     @Override
-    public Product updatePrice(long id, Double price) {
+    public Product updatePrice(Long id, BigDecimal price) {
         productValidator.checkIfExists(id);
         productValidator.validatePrice(price);
         Product product = productRepository.getById(id);
-        product.setPrice(BigDecimal.valueOf(price));
+        product.setPrice(price);
         return product;
     }
 
     @Override
-    public String delete(long id) {
+    public void delete(Long id) {
         productValidator.checkIfExists(id);
         productRepository.deleteById(id);
-        return "Deleted";
     }
 }

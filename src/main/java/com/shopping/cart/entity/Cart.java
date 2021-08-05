@@ -1,5 +1,6 @@
 package com.shopping.cart.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -21,6 +22,7 @@ public class Cart {
             generator = "cart_sequence")
     private Long id;
 
+    @JsonIgnore
     @OneToOne(mappedBy = "cart")
     private Person person;
 
