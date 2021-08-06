@@ -9,7 +9,6 @@ import com.shopping.cart.repository.ProductRepository;
 import com.shopping.cart.service.CartService;
 import com.shopping.cart.validator.CartValidator;
 import com.shopping.cart.validator.PersonValidator;
-import com.shopping.cart.validator.ProductValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,9 +34,6 @@ public class CartServiceImpl implements CartService {
     private PersonValidator personValidator;
 
     @Autowired
-    private ProductValidator productValidator;
-
-    @Autowired
     private CartValidator cartValidator;
 
     @Override
@@ -54,7 +50,7 @@ public class CartServiceImpl implements CartService {
     @Override
     public Cart addProductToCart(Long cartId, Long productId, Integer quantity) {
         cartValidator.checkIfExists(cartId);
-        productValidator.checkIfExists(productId);
+        //productValidator.checkIfExists(productId);
         cartValidator.checkProductQuantity(quantity);
 
         Cart cart = cartRepository.getById(cartId);
@@ -70,7 +66,7 @@ public class CartServiceImpl implements CartService {
     @Override
     public Cart deleteProductFromCart(Long cartId, Long productId) {
         cartValidator.checkIfExists(cartId);
-        productValidator.checkIfExists(productId);
+        //productValidator.checkIfExists(productId);
 
         Cart cart = cartRepository.getById(cartId);
         List<CartItem> products = cart.getCartItems();

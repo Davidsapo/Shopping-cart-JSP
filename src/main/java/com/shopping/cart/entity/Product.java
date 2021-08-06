@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.ToString;
 
 import javax.persistence.*;
+import javax.validation.constraints.*;
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -26,9 +27,12 @@ public class Product {
     private Long id;
 
     @Column(nullable = false)
+    @NotBlank(message = "Product name can not be empty!")
     private String name;
 
     @Column(nullable = false)
+    @NotNull
+    @PositiveOrZero(message = "Product price can not be less then 0!")
     private BigDecimal price;
 
     @JsonIgnore

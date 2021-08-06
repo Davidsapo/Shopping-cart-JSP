@@ -2,14 +2,16 @@ package com.shopping.cart.service.impl;
 
 import com.shopping.cart.entity.Product;
 import com.shopping.cart.repository.ProductRepository;
+import com.shopping.cart.request.UpdateProductRequest;
 import com.shopping.cart.service.ProductService;
-import com.shopping.cart.validator.ProductValidator;
+import com.shopping.cart.validator.IdValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class ProductServiceImpl implements ProductService {
@@ -18,11 +20,10 @@ public class ProductServiceImpl implements ProductService {
     private ProductRepository productRepository;
 
     @Autowired
-    private ProductValidator productValidator;
+    private IdValidator idValidator;
 
     @Override
     public Product createProduct(Product product) {
-        productValidator.validate(product);
         return productRepository.save(product);
     }
 
@@ -33,17 +34,23 @@ public class ProductServiceImpl implements ProductService {
 
     @Transactional
     @Override
-    public Product updatePrice(Long id, BigDecimal price) {
-        productValidator.checkIfExists(id);
-        productValidator.validatePrice(price);
-        Product product = productRepository.getById(id);
-        product.setPrice(price);
-        return product;
+    public Product updatePrice(Long id, UpdateProductRequest updateProductRequest) {
+        idValidator.validProductId(id);
+        Product productFromDB = productRepository.getById(id);
+        String updatedName = updateProductRequest.getName();
+        BigDecimal updatedPrice = updateProductRequest.getPrice();
+        if (Objects.nonNull(updatedName) && !updatedName.isEmpty()) {
+            productFromDB.setName(updatedName);
+        }
+        if (Objects.nonNull(updatedPrice)) {
+            productFromDB.setPrice(updatedPrice);
+        }
+        return productFromDB;
     }
 
     @Override
     public void delete(Long id) {
-        productValidator.checkIfExists(id);
+        idValidator.validProductId(id);
         productRepository.deleteById(id);
     }
 }

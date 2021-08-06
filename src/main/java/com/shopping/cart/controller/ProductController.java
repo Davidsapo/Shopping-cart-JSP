@@ -1,13 +1,13 @@
 package com.shopping.cart.controller;
 
 import com.shopping.cart.entity.Product;
+import com.shopping.cart.request.UpdateProductRequest;
 import com.shopping.cart.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.math.BigDecimal;
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -18,7 +18,7 @@ public class ProductController {
     private ProductService productService;
 
     @PostMapping("/add")
-    public ResponseEntity<Product> add(@RequestBody Product product) {
+    public ResponseEntity<Product> add(@RequestBody @Valid Product product) {
         return ResponseEntity.ok(productService.createProduct(product));
     }
 
@@ -28,8 +28,8 @@ public class ProductController {
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<Product> update(@PathVariable("id") Long id, @RequestParam BigDecimal price) {
-        return ResponseEntity.ok(productService.updatePrice(id, price));
+    public ResponseEntity<Product> update(@PathVariable("id") Long id, @RequestBody @Valid UpdateProductRequest updateProductRequest) {
+        return ResponseEntity.ok(productService.updatePrice(id, updateProductRequest));
     }
 
     @DeleteMapping("/delete/{id}")
