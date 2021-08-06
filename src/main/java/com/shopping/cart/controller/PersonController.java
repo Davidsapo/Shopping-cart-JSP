@@ -1,11 +1,13 @@
 package com.shopping.cart.controller;
 
 import com.shopping.cart.entity.Person;
+import com.shopping.cart.request.UpdatePersonRequest;
 import com.shopping.cart.service.PersonService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -16,7 +18,7 @@ public class PersonController {
     private PersonService personService;
 
     @PostMapping("/add")
-    public ResponseEntity<Person> add(@RequestBody Person person) {
+    public ResponseEntity<Person> add(@RequestBody @Valid Person person) {
         return ResponseEntity.ok(personService.addPerson(person));
     }
 
@@ -26,8 +28,8 @@ public class PersonController {
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<Person> update(@PathVariable("id") Long id, @RequestParam(required = false) String name, @RequestParam(required = false) String surname) {
-        return ResponseEntity.ok(personService.updatePerson(id, name, surname));
+    public ResponseEntity<Person> update(@PathVariable("id") Long id, @RequestBody @Valid UpdatePersonRequest updatePersonRequest) {
+        return ResponseEntity.ok(personService.updatePerson(id, updatePersonRequest));
     }
 
     @DeleteMapping("/delete/{id}")

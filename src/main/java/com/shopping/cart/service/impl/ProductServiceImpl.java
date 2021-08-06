@@ -39,7 +39,7 @@ public class ProductServiceImpl implements ProductService {
         Product productFromDB = productRepository.getById(id);
         String updatedName = updateProductRequest.getName();
         BigDecimal updatedPrice = updateProductRequest.getPrice();
-        if (Objects.nonNull(updatedName) && !updatedName.isEmpty()) {
+        if (Objects.nonNull(updatedName)) {
             productFromDB.setName(updatedName);
         }
         if (Objects.nonNull(updatedPrice)) {

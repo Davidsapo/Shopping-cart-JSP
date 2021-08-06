@@ -3,8 +3,9 @@ package com.shopping.cart.service.impl;
 import com.shopping.cart.entity.Cart;
 import com.shopping.cart.entity.Person;
 import com.shopping.cart.repository.PersonRepository;
+import com.shopping.cart.request.UpdatePersonRequest;
 import com.shopping.cart.service.PersonService;
-import com.shopping.cart.validator.PersonValidator;
+import com.shopping.cart.validator.IdValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,11 +20,10 @@ public class PersonServiceImpl implements PersonService {
     private PersonRepository personRepository;
 
     @Autowired
-    private PersonValidator personValidator;
+    private IdValidator idValidator;
 
     @Override
     public Person addPerson(Person person) {
-        personValidator.validate(person);
         person.setCart(new Cart());
         return personRepository.save(person);
     }
@@ -35,23 +35,23 @@ public class PersonServiceImpl implements PersonService {
 
     @Transactional
     @Override
-    public Person updatePerson(Long id, String name, String surname) {
-        personValidator.checkIfExists(id);
-        personValidator.validateName(name);
-        personValidator.validateSurname(surname);
+    public Person updatePerson(Long id, UpdatePersonRequest updatePersonRequest) {
+        idValidator.validPersonId(id);
         Person person = personRepository.getById(id);
-        if (Objects.nonNull(name)) {
-            person.setFirstName(name);
+        String firstName = updatePersonRequest.getFirstName();
+        String lastName = updatePersonRequest.getLastName();
+        if (Objects.nonNull(firstName)) {
+            person.setFirstName(firstName);
         }
-        if (Objects.nonNull(surname)) {
-            person.setLastName(surname);
+        if (Objects.nonNull(lastName)) {
+            person.setLastName(lastName);
         }
         return person;
     }
 
     @Override
     public void deletePerson(Long id) {
-        personValidator.checkIfExists(id);
+        idValidator.validPersonId(id);
         personRepository.deleteById(id);
     }
 }

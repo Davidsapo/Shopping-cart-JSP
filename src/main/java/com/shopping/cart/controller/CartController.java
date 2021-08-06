@@ -1,13 +1,12 @@
 package com.shopping.cart.controller;
 
 import com.shopping.cart.entity.Cart;
-import com.shopping.cart.exceptions.CartException;
+import com.shopping.cart.exceptions.exceptions.CartException;
 import com.shopping.cart.service.CartService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController

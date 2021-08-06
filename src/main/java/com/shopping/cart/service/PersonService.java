@@ -1,6 +1,7 @@
 package com.shopping.cart.service;
 
 import com.shopping.cart.entity.Person;
+import com.shopping.cart.request.UpdatePersonRequest;
 
 import java.util.List;
 
@@ -10,7 +11,7 @@ public interface PersonService {
 
     List<Person> getAllPersons();
 
-    Person updatePerson(Long id, String name, String surname);
+    Person updatePerson(Long id, UpdatePersonRequest updatePersonRequest);
 
     void deletePerson(Long id);
 }

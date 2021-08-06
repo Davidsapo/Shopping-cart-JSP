@@ -27,7 +27,8 @@ public class Product {
     private Long id;
 
     @Column(nullable = false)
-    @NotBlank(message = "Product name can not be empty!")
+    @NotNull(message = "Product name required.")
+    @Pattern(regexp = "^[A-Za-z\\s]+$", message = "Product name does not match pattern.")
     private String name;
 
     @Column(nullable = false)
