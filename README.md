@@ -1,4 +1,4 @@
-# Shopping-cart-with-Entity-Manager
+# Shopping-cart
 Shopping cart REST API
 ### Used:
 * Java core
