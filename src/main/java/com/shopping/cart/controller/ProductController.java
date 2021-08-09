@@ -1,6 +1,7 @@
 package com.shopping.cart.controller;
 
-import com.shopping.cart.entity.Product;
+import com.shopping.cart.dto.ProductGetDTO;
+import com.shopping.cart.dto.ProductPostDTO;
 import com.shopping.cart.request.UpdateProductRequest;
 import com.shopping.cart.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,21 +15,25 @@ import java.util.List;
 @RequestMapping("api/product")
 public class ProductController {
 
+    private final ProductService productService;
+
     @Autowired
-    private ProductService productService;
+    public ProductController(ProductService productService) {
+        this.productService = productService;
+    }
 
     @PostMapping("/add")
-    public ResponseEntity<Product> add(@RequestBody @Valid Product product) {
-        return ResponseEntity.ok(productService.createProduct(product));
+    public ResponseEntity<ProductGetDTO> add(@RequestBody @Valid ProductPostDTO productPostDTO) {
+        return ResponseEntity.ok(productService.createProduct(productPostDTO));
     }
 
     @GetMapping("/list")
-    public ResponseEntity<List<Product>> list() {
+    public ResponseEntity<List<ProductGetDTO>> list() {
         return ResponseEntity.ok(productService.getProducts());
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<Product> update(@PathVariable("id") Long id, @RequestBody @Valid UpdateProductRequest updateProductRequest) {
+    public ResponseEntity<ProductGetDTO> update(@PathVariable("id") Long id, @RequestBody @Valid UpdateProductRequest updateProductRequest) {
         return ResponseEntity.ok(productService.updatePrice(id, updateProductRequest));
     }
 

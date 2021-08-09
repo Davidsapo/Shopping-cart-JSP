@@ -1,7 +1,10 @@
 package com.shopping.cart.service.impl;
 
+import com.shopping.cart.dto.PersonGetDTO;
+import com.shopping.cart.dto.PersonPostDTO;
 import com.shopping.cart.entity.Cart;
 import com.shopping.cart.entity.Person;
+import com.shopping.cart.mapper.Mapper;
 import com.shopping.cart.repository.PersonRepository;
 import com.shopping.cart.request.UpdatePersonRequest;
 import com.shopping.cart.service.PersonService;
@@ -16,21 +19,29 @@ import java.util.Objects;
 @Service
 public class PersonServiceImpl implements PersonService {
 
-    @Autowired
-    private PersonRepository personRepository;
+    private final PersonRepository personRepository;
+
+    private final IdValidator idValidator;
+
+    private final Mapper mapper;
 
     @Autowired
-    private IdValidator idValidator;
-
-    @Override
-    public Person addPerson(Person person) {
-        person.setCart(new Cart());
-        return personRepository.save(person);
+    public PersonServiceImpl(PersonRepository personRepository, IdValidator idValidator, Mapper mapper) {
+        this.personRepository = personRepository;
+        this.idValidator = idValidator;
+        this.mapper = mapper;
     }
 
     @Override
-    public List<Person> getAllPersons() {
-        return personRepository.findAll();
+    public PersonGetDTO addPerson(PersonPostDTO personPostDTO) {
+        Person person = mapper.personPostDTOToPerson(personPostDTO);
+        person.setCart(new Cart());
+        return mapper.personToPersonGetDto(personRepository.save(person));
+    }
+
+    @Override
+    public List<PersonGetDTO> getAllPersons() {
+        return mapper.personsToPersonGetDTOs(personRepository.findAll());
     }
 
     @Override
@@ -41,7 +52,7 @@ public class PersonServiceImpl implements PersonService {
 
     @Transactional
     @Override
-    public Person updatePerson(Long id, UpdatePersonRequest updatePersonRequest) {
+    public PersonGetDTO updatePerson(Long id, UpdatePersonRequest updatePersonRequest) {
         idValidator.validPersonId(id);
         Person person = personRepository.getById(id);
         String firstName = updatePersonRequest.getFirstName();
@@ -52,7 +63,7 @@ public class PersonServiceImpl implements PersonService {
         if (Objects.nonNull(lastName)) {
             person.setLastName(lastName);
         }
-        return person;
+        return mapper.personToPersonGetDto(person);
     }
 
     @Override

@@ -1,6 +1,7 @@
 package com.shopping.cart.controller;
 
-import com.shopping.cart.entity.Person;
+import com.shopping.cart.dto.PersonGetDTO;
+import com.shopping.cart.dto.PersonPostDTO;
 import com.shopping.cart.request.UpdatePersonRequest;
 import com.shopping.cart.service.PersonService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,21 +15,25 @@ import java.util.List;
 @RequestMapping("api/person")
 public class PersonController {
 
+    private final PersonService personService;
+
     @Autowired
-    private PersonService personService;
+    public PersonController(PersonService personService) {
+        this.personService = personService;
+    }
 
     @PostMapping("/add")
-    public ResponseEntity<Person> add(@RequestBody @Valid Person person) {
-        return ResponseEntity.ok(personService.addPerson(person));
+    public ResponseEntity<PersonGetDTO> add(@RequestBody @Valid PersonPostDTO personPostDTO) {
+        return ResponseEntity.ok(personService.addPerson(personPostDTO));
     }
 
     @GetMapping("/list")
-    public ResponseEntity<List<Person>> list() {
+    public ResponseEntity<List<PersonGetDTO>> list() {
         return ResponseEntity.ok(personService.getAllPersons());
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<Person> update(@PathVariable("id") Long id, @RequestBody @Valid UpdatePersonRequest updatePersonRequest) {
+    public ResponseEntity<PersonGetDTO> update(@PathVariable("id") Long id, @RequestBody @Valid UpdatePersonRequest updatePersonRequest) {
         return ResponseEntity.ok(personService.updatePerson(id, updatePersonRequest));
     }
 

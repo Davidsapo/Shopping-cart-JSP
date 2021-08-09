@@ -2,18 +2,23 @@ package com.shopping.cart.validator;
 
 import com.shopping.cart.exceptions.exceptions.IdException;
 import com.shopping.cart.exceptions.exceptions.ProductException;
-import com.shopping.cart.repository.*;
+import com.shopping.cart.repository.PersonRepository;
+import com.shopping.cart.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
 public class IdValidator {
 
-    @Autowired
-    private ProductRepository productRepository;
+    private final ProductRepository productRepository;
+
+    private final PersonRepository personRepository;
 
     @Autowired
-    private PersonRepository personRepository;
+    public IdValidator(ProductRepository productRepository, PersonRepository personRepository) {
+        this.productRepository = productRepository;
+        this.personRepository = personRepository;
+    }
 
     public void validProductId(Long productId) {
         validId(productId);

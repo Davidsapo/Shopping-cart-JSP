@@ -1,5 +1,7 @@
 package com.shopping.cart.service;
 
+import com.shopping.cart.dto.PersonGetDTO;
+import com.shopping.cart.dto.PersonPostDTO;
 import com.shopping.cart.entity.Person;
 import com.shopping.cart.request.UpdatePersonRequest;
 
@@ -7,13 +9,13 @@ import java.util.List;
 
 public interface PersonService {
 
-    Person addPerson(Person person);
+    PersonGetDTO addPerson(PersonPostDTO personPostDTO);
 
-    List<Person> getAllPersons();
+    List<PersonGetDTO> getAllPersons();
 
     Person getPerson(Long id);
 
-    Person updatePerson(Long id, UpdatePersonRequest updatePersonRequest);
+    PersonGetDTO updatePerson(Long id, UpdatePersonRequest updatePersonRequest);
 
     void deletePerson(Long id);
 }

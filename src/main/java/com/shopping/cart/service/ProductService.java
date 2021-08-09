@@ -1,20 +1,21 @@
 package com.shopping.cart.service;
 
+import com.shopping.cart.dto.ProductGetDTO;
+import com.shopping.cart.dto.ProductPostDTO;
 import com.shopping.cart.entity.Product;
 import com.shopping.cart.request.UpdateProductRequest;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 public interface ProductService {
 
-    Product createProduct(Product product);
+    ProductGetDTO createProduct(ProductPostDTO productPostDTO);
 
-    List<Product> getProducts();
+    List<ProductGetDTO> getProducts();
 
     Product getProduct(Long id);
 
-    Product updatePrice(Long id, UpdateProductRequest updateProductRequest);
+    ProductGetDTO updatePrice(Long id, UpdateProductRequest updateProductRequest);
 
     void delete(Long id);
 }

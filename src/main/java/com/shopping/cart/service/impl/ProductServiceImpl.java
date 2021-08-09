@@ -1,6 +1,9 @@
 package com.shopping.cart.service.impl;
 
+import com.shopping.cart.dto.ProductGetDTO;
+import com.shopping.cart.dto.ProductPostDTO;
 import com.shopping.cart.entity.Product;
+import com.shopping.cart.mapper.Mapper;
 import com.shopping.cart.repository.ProductRepository;
 import com.shopping.cart.request.UpdateProductRequest;
 import com.shopping.cart.service.ProductService;
@@ -16,20 +19,27 @@ import java.util.Objects;
 @Service
 public class ProductServiceImpl implements ProductService {
 
-    @Autowired
-    private ProductRepository productRepository;
+    private final ProductRepository productRepository;
+
+    private final IdValidator idValidator;
+
+    private final Mapper mapper;
 
     @Autowired
-    private IdValidator idValidator;
-
-    @Override
-    public Product createProduct(Product product) {
-        return productRepository.save(product);
+    public ProductServiceImpl(ProductRepository productRepository, IdValidator idValidator, Mapper mapper) {
+        this.productRepository = productRepository;
+        this.idValidator = idValidator;
+        this.mapper = mapper;
     }
 
     @Override
-    public List<Product> getProducts() {
-        return productRepository.findAll();
+    public ProductGetDTO createProduct(ProductPostDTO productPostDTO) {
+        return mapper.productToProductGetDTO(productRepository.save(mapper.productPostDTOToProduct(productPostDTO)));
+    }
+
+    @Override
+    public List<ProductGetDTO> getProducts() {
+        return mapper.productsToProductGetDTOs(productRepository.findAll());
     }
 
     @Override
@@ -40,7 +50,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Transactional
     @Override
-    public Product updatePrice(Long id, UpdateProductRequest updateProductRequest) {
+    public ProductGetDTO updatePrice(Long id, UpdateProductRequest updateProductRequest) {
         idValidator.validProductId(id);
         Product productFromDB = productRepository.getById(id);
         String updatedName = updateProductRequest.getName();
@@ -51,7 +61,7 @@ public class ProductServiceImpl implements ProductService {
         if (Objects.nonNull(updatedPrice)) {
             productFromDB.setPrice(updatedPrice);
         }
-        return productFromDB;
+        return mapper.productToProductGetDTO(productFromDB);
     }
 
     @Override
