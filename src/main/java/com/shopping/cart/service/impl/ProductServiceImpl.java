@@ -32,6 +32,12 @@ public class ProductServiceImpl implements ProductService {
         return productRepository.findAll();
     }
 
+    @Override
+    public Product getProduct(Long id) {
+        idValidator.validProductId(id);
+        return productRepository.getById(id);
+    }
+
     @Transactional
     @Override
     public Product updatePrice(Long id, UpdateProductRequest updateProductRequest) {

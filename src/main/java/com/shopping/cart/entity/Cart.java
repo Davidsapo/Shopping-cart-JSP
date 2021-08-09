@@ -26,7 +26,7 @@ public class Cart {
     @OneToOne(mappedBy = "cart")
     private Person person;
 
-    @OneToMany(mappedBy = "cart", orphanRemoval = true)
+    @OneToMany(mappedBy = "cart", orphanRemoval = true, cascade = CascadeType.ALL)
     private List<CartItem> cartItems;
 
     private BigDecimal totalPrice = BigDecimal.ZERO;

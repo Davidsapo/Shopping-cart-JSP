@@ -1,22 +1,35 @@
 package com.shopping.cart.controller;
 
+import com.shopping.cart.dto.CartDTO;
 import com.shopping.cart.entity.Cart;
 import com.shopping.cart.exceptions.exceptions.CartException;
+import com.shopping.cart.request.AddToCartRequest;
 import com.shopping.cart.service.CartService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
 @RequestMapping("api/cart")
 public class CartController {
 
-    @Autowired
-    private CartService cartService;
+    private final CartService cartService;
 
-    @PostMapping("add")
+    @Autowired
+    public CartController(CartService cartService) {
+        this.cartService = cartService;
+    }
+
+    @PostMapping("/add-product")
+    public ResponseEntity<CartDTO> addProduct(@RequestBody @Valid AddToCartRequest request) {
+        return ResponseEntity.ok(cartService.addProduct(request.getPersonID(), request.getProductID(), request.getQuantity()));
+    }
+
+    /*@PostMapping("add")
     public ResponseEntity<Cart> add(long personId) {
         return ResponseEntity.ok(cartService.addCart(personId));
     }
@@ -45,5 +58,5 @@ public class CartController {
     @DeleteMapping("delete/{cartId}")
     public ResponseEntity<String> delete(@PathVariable long cartId) {
         return ResponseEntity.ok(cartService.deleteById(cartId));
-    }
+    }*/
 }

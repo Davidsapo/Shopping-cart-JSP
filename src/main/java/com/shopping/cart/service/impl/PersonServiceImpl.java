@@ -33,6 +33,12 @@ public class PersonServiceImpl implements PersonService {
         return personRepository.findAll();
     }
 
+    @Override
+    public Person getPerson(Long id) {
+        idValidator.validPersonId(id);
+        return personRepository.getById(id);
+    }
+
     @Transactional
     @Override
     public Person updatePerson(Long id, UpdatePersonRequest updatePersonRequest) {

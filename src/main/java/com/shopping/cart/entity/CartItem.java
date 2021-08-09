@@ -10,6 +10,7 @@ import javax.persistence.*;
 public class CartItem {
 
     @Id
+    @JsonIgnore
     @SequenceGenerator(
             name = "product_in_cart_sequence",
             allocationSize = 1)

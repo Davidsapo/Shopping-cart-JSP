@@ -1,12 +1,15 @@
 package com.shopping.cart.service;
 
+import com.shopping.cart.dto.CartDTO;
 import com.shopping.cart.entity.Cart;
 
 import java.util.List;
 
 public interface CartService {
 
-    Cart addCart(long personId);
+    CartDTO addProduct(Long personID, Long productID, Integer quantity);
+
+    /*Cart addCart(long personId);
 
     List<Cart> getAllCarts(Long personId);
 
@@ -14,6 +17,6 @@ public interface CartService {
 
     Cart deleteProductFromCart(Long chartId, Long productId);
 
-    String deleteById(Long id);
+    String deleteById(Long id);*/
 }
 
