@@ -10,6 +10,7 @@ import com.shopping.cart.repository.CartRepository;
 import com.shopping.cart.service.CartService;
 import com.shopping.cart.service.PersonService;
 import com.shopping.cart.service.ProductService;
+import com.shopping.cart.validator.IdValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,6 +33,11 @@ public class CartServiceImpl implements CartService {
         this.personService = personService;
         this.productService = productService;
         this.mapper = mapper;
+    }
+
+    @Override
+    public CartDTO fetchCart(Long personId) {
+        return mapper.cartToCartDTO(personService.getPerson(personId).getCart());
     }
 
     @Override

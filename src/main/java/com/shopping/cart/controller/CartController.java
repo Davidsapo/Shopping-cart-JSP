@@ -5,10 +5,7 @@ import com.shopping.cart.request.AddToCartRequest;
 import com.shopping.cart.service.CartService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
@@ -21,6 +18,11 @@ public class CartController {
     @Autowired
     public CartController(CartService cartService) {
         this.cartService = cartService;
+    }
+
+    @GetMapping
+    public ResponseEntity<CartDTO> fetchCart(@RequestParam Long personId) {
+        return ResponseEntity.ok(cartService.fetchCart(personId));
     }
 
     @PostMapping("/add-product")
