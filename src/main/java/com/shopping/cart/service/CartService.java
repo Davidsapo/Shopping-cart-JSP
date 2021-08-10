@@ -6,7 +6,9 @@ public interface CartService {
 
     CartDTO fetchCart(Long personId);
 
-    CartDTO addProduct(Long personID, Long productID, Integer quantity);
+    CartDTO addProduct(Long personID, Long productId, Integer quantity);
+
+    CartDTO updateCartItem(Long personID, Long cartItemId, Integer quantity);
 
 }
 

@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -55,12 +56,25 @@ public class CartServiceImpl implements CartService {
                 return mapper.cartToCartDTO(cart);
             }
         }
-
         CartItem newCartItem = new CartItem();
         newCartItem.setCart(cart);
         newCartItem.setProduct(product);
         newCartItem.setQuantity(quantity);
         cart.getCartItems().add(newCartItem);
+        countTotalPrice(cart);
+        return mapper.cartToCartDTO(cart);
+    }
+
+    @Override
+    @Transactional
+    public CartDTO updateCartItem(Long personID, Long cartItemId, Integer quantity) {
+        Cart cart = personService.getPerson(personID).getCart();
+        CartItem cartItem = cart.getCartItems()
+                .stream()
+                .filter(item -> Objects.equals(item.getId(), cartItemId))
+                .findFirst()
+                .orElseThrow(() -> new NoSuchElementException("No cart item with id: " + cartItemId));
+        cartItem.setQuantity(quantity);
         countTotalPrice(cart);
         return mapper.cartToCartDTO(cart);
     }
