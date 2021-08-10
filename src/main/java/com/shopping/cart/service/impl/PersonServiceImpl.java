@@ -4,6 +4,7 @@ import com.shopping.cart.dto.PersonGetDTO;
 import com.shopping.cart.dto.PersonPostDTO;
 import com.shopping.cart.entity.Cart;
 import com.shopping.cart.entity.Person;
+import com.shopping.cart.exception.exceptions.NonUniqueValueException;
 import com.shopping.cart.mapper.Mapper;
 import com.shopping.cart.repository.PersonRepository;
 import com.shopping.cart.request.UpdatePersonRequest;
@@ -34,6 +35,9 @@ public class PersonServiceImpl implements PersonService {
 
     @Override
     public PersonGetDTO addPerson(PersonPostDTO personPostDTO) {
+        if (personRepository.existsByEmailIgnoreCase(personPostDTO.getEmail())) {
+            throw new NonUniqueValueException("Person", "email", personPostDTO.getEmail());
+        }
         Person person = mapper.personPostDTOToPerson(personPostDTO);
         person.setCart(new Cart());
         return mapper.personToPersonGetDto(personRepository.save(person));

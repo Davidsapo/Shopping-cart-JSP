@@ -3,6 +3,7 @@ package com.shopping.cart.service.impl;
 import com.shopping.cart.dto.ProductGetDTO;
 import com.shopping.cart.dto.ProductPostDTO;
 import com.shopping.cart.entity.Product;
+import com.shopping.cart.exception.exceptions.NonUniqueValueException;
 import com.shopping.cart.mapper.Mapper;
 import com.shopping.cart.repository.ProductRepository;
 import com.shopping.cart.request.UpdateProductRequest;
@@ -34,6 +35,9 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public ProductGetDTO createProduct(ProductPostDTO productPostDTO) {
+        if (productRepository.existsByNameIgnoreCase(productPostDTO.getName())) {
+            throw new NonUniqueValueException("Product", "name", productPostDTO.getName());
+        }
         return mapper.productToProductGetDTO(productRepository.save(mapper.productPostDTOToProduct(productPostDTO)));
     }
 
@@ -55,6 +59,9 @@ public class ProductServiceImpl implements ProductService {
         Product productFromDB = productRepository.getById(id);
         String updatedName = updateProductRequest.getName();
         BigDecimal updatedPrice = updateProductRequest.getPrice();
+        if (!productFromDB.getName().equalsIgnoreCase(updatedName) && productRepository.existsByNameIgnoreCase(updateProductRequest.getName())) {
+            throw new NonUniqueValueException("Product", "name", updateProductRequest.getName());
+        }
         if (Objects.nonNull(updatedName)) {
             productFromDB.setName(updatedName);
         }
