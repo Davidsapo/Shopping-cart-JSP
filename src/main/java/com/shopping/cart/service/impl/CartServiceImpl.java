@@ -6,11 +6,9 @@ import com.shopping.cart.entity.CartItem;
 import com.shopping.cart.entity.Person;
 import com.shopping.cart.entity.Product;
 import com.shopping.cart.mapper.Mapper;
-import com.shopping.cart.repository.CartRepository;
 import com.shopping.cart.service.CartService;
 import com.shopping.cart.service.PersonService;
 import com.shopping.cart.service.ProductService;
-import com.shopping.cart.validator.IdValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,14 +21,12 @@ import java.util.Optional;
 @Service
 public class CartServiceImpl implements CartService {
 
-    private final CartRepository cartRepository;
     private final PersonService personService;
     private final ProductService productService;
     private final Mapper mapper;
 
     @Autowired
-    public CartServiceImpl(CartRepository cartRepository, PersonService personService, ProductService productService, Mapper mapper) {
-        this.cartRepository = cartRepository;
+    public CartServiceImpl(PersonService personService, ProductService productService, Mapper mapper) {
         this.personService = personService;
         this.productService = productService;
         this.mapper = mapper;
@@ -56,6 +52,7 @@ public class CartServiceImpl implements CartService {
                 return mapper.cartToCartDTO(cart);
             }
         }
+
         CartItem newCartItem = new CartItem();
         newCartItem.setCart(cart);
         newCartItem.setProduct(product);
@@ -75,6 +72,17 @@ public class CartServiceImpl implements CartService {
                 .findFirst()
                 .orElseThrow(() -> new NoSuchElementException("No cart item with id: " + cartItemId));
         cartItem.setQuantity(quantity);
+        countTotalPrice(cart);
+        return mapper.cartToCartDTO(cart);
+    }
+
+    @Override
+    @Transactional
+    public CartDTO deleteCartItem(Long personID, Long cartItemId) {
+        Cart cart = personService.getPerson(personID).getCart();
+        if (!cart.getCartItems().removeIf(item -> Objects.equals(item.getId(), cartItemId))) {
+            throw new NoSuchElementException("No cart item with id: " + cartItemId);
+        }
         countTotalPrice(cart);
         return mapper.cartToCartDTO(cart);
     }

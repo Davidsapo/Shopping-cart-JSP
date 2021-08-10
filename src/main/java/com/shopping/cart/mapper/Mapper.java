@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 
+@Component
 @org.mapstruct.Mapper(componentModel = "spring")
 public interface Mapper {
 

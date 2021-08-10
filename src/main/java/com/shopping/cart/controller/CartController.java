@@ -2,6 +2,7 @@ package com.shopping.cart.controller;
 
 import com.shopping.cart.dto.CartDTO;
 import com.shopping.cart.request.AddToCartRequest;
+import com.shopping.cart.request.DeleteCartItemRequest;
 import com.shopping.cart.request.UpdateCartItemRequest;
 import com.shopping.cart.service.CartService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,9 +32,14 @@ public class CartController {
         return ResponseEntity.ok(cartService.addProduct(request.getPersonID(), request.getProductID(), request.getQuantity()));
     }
 
-    @PutMapping("/update")
+    @PutMapping("/update-cart-item")
     public ResponseEntity<CartDTO> updateCartItem(@RequestBody @Valid UpdateCartItemRequest request) {
         return ResponseEntity.ok(cartService.updateCartItem(request.getPersonId(), request.getCartItemId(), request.getQuantity()));
+    }
+
+    @DeleteMapping("/delete-cart-item")
+    public ResponseEntity<CartDTO> deleteCartItem(@RequestBody @Valid DeleteCartItemRequest request) {
+        return ResponseEntity.ok(cartService.deleteCartItem(request.getPersonId(), request.getCartItemId()));
     }
 
 }
