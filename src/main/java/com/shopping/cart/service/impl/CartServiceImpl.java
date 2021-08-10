@@ -52,7 +52,6 @@ public class CartServiceImpl implements CartService {
                 return mapper.cartToCartDTO(cart);
             }
         }
-
         CartItem newCartItem = new CartItem();
         newCartItem.setCart(cart);
         newCartItem.setProduct(product);
@@ -85,6 +84,14 @@ public class CartServiceImpl implements CartService {
         }
         countTotalPrice(cart);
         return mapper.cartToCartDTO(cart);
+    }
+
+    @Override
+    @Transactional
+    public void emptyCart(Long personID) {
+        Cart cart = personService.getPerson(personID).getCart();
+        cart.getCartItems().clear();
+        cart.setTotalPrice(BigDecimal.ZERO);
     }
 
     private void countTotalPrice(Cart cart) {

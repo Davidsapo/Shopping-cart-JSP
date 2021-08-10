@@ -6,6 +6,7 @@ import com.shopping.cart.request.DeleteCartItemRequest;
 import com.shopping.cart.request.UpdateCartItemRequest;
 import com.shopping.cart.service.CartService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -40,6 +41,12 @@ public class CartController {
     @DeleteMapping("/delete-cart-item")
     public ResponseEntity<CartDTO> deleteCartItem(@RequestBody @Valid DeleteCartItemRequest request) {
         return ResponseEntity.ok(cartService.deleteCartItem(request.getPersonId(), request.getCartItemId()));
+    }
+
+    @DeleteMapping("/empty")
+    public ResponseEntity<HttpStatus> emptyCart(@RequestParam Long personId){
+        cartService.emptyCart(personId);
+        return ResponseEntity.ok().build();
     }
 
 }

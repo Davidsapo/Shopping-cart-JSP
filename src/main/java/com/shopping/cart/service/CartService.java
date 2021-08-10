@@ -12,5 +12,7 @@ public interface CartService {
 
     CartDTO deleteCartItem(Long personID, Long cartItemId);
 
+    void emptyCart(Long personID);
+
 }
 
