@@ -1,4 +1,4 @@
-package com.shopping.cart.exceptions;
+package com.shopping.cart.exception;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;

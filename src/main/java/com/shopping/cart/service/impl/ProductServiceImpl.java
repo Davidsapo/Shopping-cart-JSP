@@ -50,7 +50,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Transactional
     @Override
-    public ProductGetDTO updatePrice(Long id, UpdateProductRequest updateProductRequest) {
+    public ProductGetDTO updateProduct(Long id, UpdateProductRequest updateProductRequest) {
         idValidator.validProductId(id);
         Product productFromDB = productRepository.getById(id);
         String updatedName = updateProductRequest.getName();
