@@ -3,48 +3,63 @@ package com.shopping.cart.exception;
 import com.shopping.cart.exception.exceptions.IdException;
 import com.shopping.cart.exception.exceptions.NonUniqueValueException;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.validation.BindException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.servlet.ModelAndView;
 
 import java.util.NoSuchElementException;
 
 @RestControllerAdvice
 public class RestApiExceptionHandler {
 
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<RestApiException> handleValidationException(MethodArgumentNotValidException exception) {
+    @ExceptionHandler(BindException.class)
+    public ModelAndView handleValidationException(BindException exception) {
         StringBuilder message = new StringBuilder();
         exception.getFieldErrors().forEach(fieldError -> message.append(String.format("%s : %s ", fieldError.getField(),
                 fieldError.getDefaultMessage())));
         RestApiException restApiException = new RestApiException(HttpStatus.BAD_REQUEST, message.toString());
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(restApiException);
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.addObject("error", restApiException);
+        modelAndView.setViewName("exception");
+        return modelAndView;
     }
 
     @ExceptionHandler(IdException.class)
-    public ResponseEntity<RestApiException> handleIdException(IdException exception) {
+    public ModelAndView handleIdException(IdException exception) {
         RestApiException restApiException = new RestApiException(HttpStatus.NOT_FOUND, exception.getMessage());
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(restApiException);
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.addObject("error", restApiException);
+        modelAndView.setViewName("exception");
+        return modelAndView;
     }
 
     @ExceptionHandler(NonUniqueValueException.class)
-    public ResponseEntity<RestApiException> handleNonUniqueValueException(NonUniqueValueException exception) {
+    public ModelAndView handleNonUniqueValueException(NonUniqueValueException exception) {
         RestApiException restApiException = new RestApiException(HttpStatus.CONFLICT, exception.getMessage());
-        return ResponseEntity.status(HttpStatus.CONFLICT).body(restApiException);
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.addObject("error", restApiException);
+        modelAndView.setViewName("exception");
+        return modelAndView;
     }
 
     @ExceptionHandler(NoSuchElementException.class)
-    public ResponseEntity<RestApiException> handleNoSuchElementException(NoSuchElementException exception) {
+    public ModelAndView handleNoSuchElementException(NoSuchElementException exception) {
         RestApiException restApiException = new RestApiException(HttpStatus.NOT_FOUND, exception.getMessage());
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(restApiException);
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.addObject("error", restApiException);
+        modelAndView.setViewName("exception");
+        return modelAndView;
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<RestApiException> handleException(Exception exception) {
+    public ModelAndView handleException(Exception exception) {
         RestApiException restApiException = new RestApiException(HttpStatus.INTERNAL_SERVER_ERROR,
                 exception.getClass().getName() + ": " + exception.getMessage());
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(restApiException);
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.addObject("error", restApiException);
+        modelAndView.setViewName("exception");
+        return modelAndView;
     }
 
 }

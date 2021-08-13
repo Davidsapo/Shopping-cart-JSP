@@ -1,6 +1,7 @@
 package com.shopping.cart.service.impl;
 
 import com.shopping.cart.dto.CartDTO;
+import com.shopping.cart.dto.CartItemDTO;
 import com.shopping.cart.entity.Cart;
 import com.shopping.cart.entity.CartItem;
 import com.shopping.cart.entity.Person;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Optional;
@@ -33,14 +35,14 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
-    public CartDTO fetchCart(Long personId) {
-        return mapper.cartToCartDTO(personService.getPerson(personId).getCart());
+    public CartDTO fetchCart() {
+        return mapper.cartToCartDTO(personService.getAuthorizedPerson().getCart());
     }
 
     @Override
     @Transactional
-    public CartDTO addProduct(Long personID, Long productID, Integer quantity) {
-        Person person = personService.getPerson(personID);
+    public CartDTO addProduct(Long productID, Integer quantity) {
+        Person person = personService.getAuthorizedPerson();
         Cart cart = person.getCart();
         Product product = productService.getProduct(productID);
 
@@ -63,8 +65,25 @@ public class CartServiceImpl implements CartService {
 
     @Override
     @Transactional
-    public CartDTO updateCartItem(Long personID, Long cartItemId, Integer quantity) {
-        Cart cart = personService.getPerson(personID).getCart();
+    public CartDTO updateCart(CartDTO cartDTO) {
+        Cart currentCart = personService.getAuthorizedPerson().getCart();
+        List<CartItemDTO> newCartItems = cartDTO.getCartItems();
+        List<CartItem> oldCartItems = currentCart.getCartItems();
+        int quantity;
+        for (int i = 0; i < newCartItems.size(); i++) {
+            quantity = newCartItems.get(i).getQuantity();
+            if (quantity > 0) {
+                oldCartItems.get(i).setQuantity(quantity);
+            }
+        }
+        countTotalPrice(currentCart);
+        return mapper.cartToCartDTO(currentCart);
+    }
+
+    @Override
+    @Transactional
+    public CartDTO updateCartItem(Long cartItemId, Integer quantity) {
+        Cart cart = personService.getAuthorizedPerson().getCart();
         CartItem cartItem = cart.getCartItems()
                 .stream()
                 .filter(item -> Objects.equals(item.getId(), cartItemId))
@@ -77,8 +96,8 @@ public class CartServiceImpl implements CartService {
 
     @Override
     @Transactional
-    public CartDTO deleteCartItem(Long personID, Long cartItemId) {
-        Cart cart = personService.getPerson(personID).getCart();
+    public CartDTO deleteCartItem(Long cartItemId) {
+        Cart cart = personService.getAuthorizedPerson().getCart();
         if (!cart.getCartItems().removeIf(item -> Objects.equals(item.getId(), cartItemId))) {
             throw new NoSuchElementException("No cart item with id: " + cartItemId);
         }
@@ -88,8 +107,8 @@ public class CartServiceImpl implements CartService {
 
     @Override
     @Transactional
-    public void emptyCart(Long personID) {
-        Cart cart = personService.getPerson(personID).getCart();
+    public void emptyCart() {
+        Cart cart = personService.getAuthorizedPerson().getCart();
         cart.getCartItems().clear();
         cart.setTotalPrice(BigDecimal.ZERO);
     }

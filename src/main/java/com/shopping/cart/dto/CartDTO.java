@@ -11,4 +11,6 @@ public class CartDTO {
     private List<CartItemDTO> cartItems;
 
     private BigDecimal totalPrice = BigDecimal.ZERO;
+
+
 }

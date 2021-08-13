@@ -1,18 +1,16 @@
 package com.shopping.cart.controller;
 
-import com.shopping.cart.dto.PersonGetDTO;
 import com.shopping.cart.dto.PersonPostDTO;
-import com.shopping.cart.request.UpdatePersonRequest;
 import com.shopping.cart.service.PersonService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.List;
 
-@RestController
-@RequestMapping("api/person")
+@Controller
+@RequestMapping("shopping-cart/person")
 public class PersonController {
 
     private final PersonService personService;
@@ -22,24 +20,34 @@ public class PersonController {
         this.personService = personService;
     }
 
-    @PostMapping("/add")
-    public ResponseEntity<PersonGetDTO> add(@RequestBody @Valid PersonPostDTO personPostDTO) {
-        return ResponseEntity.ok(personService.addPerson(personPostDTO));
+    @GetMapping("/registration")
+    public String registrationPage(Model model) {
+        model.addAttribute("person", new PersonPostDTO());
+        return "registration";
+    }
+
+    @PostMapping("/registration")
+    public String register(@ModelAttribute @Valid PersonPostDTO personPostDTO) {
+        personService.addPerson(personPostDTO);
+        return "redirect:/shopping-cart/person/profile";
+    }
+
+    @GetMapping("/profile")
+    public String profilePage(Model model) {
+        model.addAttribute("person", personService.getAuthorizedPersonGetDTO());
+        return "profile";
     }
 
     @GetMapping("/list")
-    public ResponseEntity<List<PersonGetDTO>> list() {
-        return ResponseEntity.ok(personService.getAllPersons());
+    public String list(Model model) {
+        model.addAttribute("persons", personService.getAllPersons());
+        model.addAttribute("personCount", personService.getAllPersons().size());
+        return "personList";
     }
 
-    @PutMapping("/update/{id}")
-    public ResponseEntity<PersonGetDTO> update(@PathVariable("id") Long id, @RequestBody @Valid UpdatePersonRequest updatePersonRequest) {
-        return ResponseEntity.ok(personService.updatePerson(id, updatePersonRequest));
-    }
-
-    @DeleteMapping("/delete/{id}")
-    public ResponseEntity<String> delete(@PathVariable("id") Long id) {
+    @GetMapping("/delete")
+    public String delete(@RequestParam Long id) {
         personService.deletePerson(id);
-        return ResponseEntity.ok("Person deleted successfully.");
+        return "redirect:/shopping-cart/person/list";
     }
 }

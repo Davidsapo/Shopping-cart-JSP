@@ -15,6 +15,10 @@ public interface PersonService {
 
     Person getPerson(Long id);
 
+    PersonGetDTO getAuthorizedPersonGetDTO();
+
+    Person getAuthorizedPerson();
+
     PersonGetDTO updatePerson(Long id, UpdatePersonRequest updatePersonRequest);
 
     void deletePerson(Long id);

@@ -4,6 +4,7 @@ import com.shopping.cart.dto.PersonGetDTO;
 import com.shopping.cart.dto.PersonPostDTO;
 import com.shopping.cart.entity.Cart;
 import com.shopping.cart.entity.Person;
+import com.shopping.cart.enums.Role;
 import com.shopping.cart.exception.exceptions.NonUniqueValueException;
 import com.shopping.cart.mapper.Mapper;
 import com.shopping.cart.repository.PersonRepository;
@@ -11,6 +12,7 @@ import com.shopping.cart.request.UpdatePersonRequest;
 import com.shopping.cart.service.PersonService;
 import com.shopping.cart.validator.IdValidator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -40,6 +42,7 @@ public class PersonServiceImpl implements PersonService {
         }
         Person person = mapper.personPostDTOToPerson(personPostDTO);
         person.setCart(new Cart());
+        person.setRole(Role.USER);
         return mapper.personToPersonGetDto(personRepository.save(person));
     }
 
@@ -52,6 +55,19 @@ public class PersonServiceImpl implements PersonService {
     public Person getPerson(Long id) {
         idValidator.validPersonId(id);
         return personRepository.getById(id);
+    }
+
+    @Override
+    public PersonGetDTO getAuthorizedPersonGetDTO() {
+        String userName = SecurityContextHolder.getContext().getAuthentication().getName();
+        Person person = personRepository.getByUsername(userName);
+        return mapper.personToPersonGetDto(person);
+    }
+
+    @Override
+    public Person getAuthorizedPerson() {
+        String userName = SecurityContextHolder.getContext().getAuthentication().getName();
+        return personRepository.getByUsername(userName);
     }
 
     @Transactional

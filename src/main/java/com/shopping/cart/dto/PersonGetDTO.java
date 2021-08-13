@@ -1,6 +1,6 @@
 package com.shopping.cart.dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.shopping.cart.enums.Role;
 import lombok.Data;
 
 @Data
@@ -12,7 +12,10 @@ public class PersonGetDTO {
 
     private String lastName;
 
+    private String username;
+
+    private Role role;
+
     private String email;
 
-    private CartDTO cart;
 }

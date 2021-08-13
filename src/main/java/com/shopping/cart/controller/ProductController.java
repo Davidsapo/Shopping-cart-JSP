@@ -1,18 +1,18 @@
 package com.shopping.cart.controller;
 
-import com.shopping.cart.dto.ProductGetDTO;
 import com.shopping.cart.dto.ProductPostDTO;
+import com.shopping.cart.entity.Product;
 import com.shopping.cart.request.UpdateProductRequest;
 import com.shopping.cart.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.List;
 
-@RestController
-@RequestMapping("api/product")
+@Controller
+@RequestMapping("shopping-cart/product")
 public class ProductController {
 
     private final ProductService productService;
@@ -22,24 +22,40 @@ public class ProductController {
         this.productService = productService;
     }
 
+    @GetMapping("/add")
+    public String addPage(Model model) {
+        model.addAttribute("productPostDto", new ProductPostDTO());
+        return "addProduct";
+    }
+
     @PostMapping("/add")
-    public ResponseEntity<ProductGetDTO> add(@RequestBody @Valid ProductPostDTO productPostDTO) {
-        return ResponseEntity.ok(productService.createProduct(productPostDTO));
+    public String add(@ModelAttribute @Valid ProductPostDTO productPostDTO) {
+        productService.createProduct(productPostDTO);
+        return "redirect:/shopping-cart/product/list";
     }
 
     @GetMapping("/list")
-    public ResponseEntity<List<ProductGetDTO>> list() {
-        return ResponseEntity.ok(productService.getProducts());
+    public String list(Model model) {
+        model.addAttribute("products", productService.getProducts());
+        return "productList";
     }
 
-    @PutMapping("/update/{id}")
-    public ResponseEntity<ProductGetDTO> update(@PathVariable("id") Long id, @RequestBody @Valid UpdateProductRequest updateProductRequest) {
-        return ResponseEntity.ok(productService.updateProduct(id, updateProductRequest));
+    @GetMapping("/update")
+    public String updatePage(@RequestParam("id") Long id, Model model) {
+        Product product = productService.getProduct(id);
+        model.addAttribute("updateProductRequest", new UpdateProductRequest(id, product.getName(), product.getPrice()));
+        return "updateProduct";
     }
 
-    @DeleteMapping("/delete/{id}")
-    public ResponseEntity<String> delete(@PathVariable("id") Long id) {
+    @PostMapping("/update")
+    public String update(@ModelAttribute @Valid UpdateProductRequest updateProductRequest) {
+        productService.updateProduct(updateProductRequest.getId(), updateProductRequest);
+        return "redirect:/shopping-cart/product/list";
+    }
+
+    @RequestMapping("/delete")
+    public String delete(@RequestParam("id") Long id) {
         productService.delete(id);
-        return ResponseEntity.ok("Product deleted successfully.");
+        return "redirect:/shopping-cart/product/list";
     }
 }

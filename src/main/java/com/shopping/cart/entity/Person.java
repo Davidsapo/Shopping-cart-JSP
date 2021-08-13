@@ -1,17 +1,20 @@
 package com.shopping.cart.entity;
 
+import com.shopping.cart.enums.Role;
 import lombok.Data;
 
 import javax.persistence.*;
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
+import javax.validation.constraints.*;
 
 @Data
 @Entity
-@Table(uniqueConstraints = @UniqueConstraint(
+@Table(uniqueConstraints = {@UniqueConstraint(
         name = "email_unique",
-        columnNames = "email"))
+        columnNames = "email"),
+        @UniqueConstraint(
+                name = "username_unique",
+                columnNames = "username")})
+
 public class Person {
 
     @Id
@@ -37,6 +40,20 @@ public class Person {
     @NotNull(message = "Email required")
     @Email(message = "Invalid email address.")
     private String email;
+
+    @Column(nullable = false)
+    @NotNull(message = "Username can not be empty.")
+    @Pattern(regexp = "^(?=[a-zA-Z0-9._]{4,20}$)(?!.*[_.]{2})[^_.].*[^_.]$", message = "Username does not match pattern.")
+    private String username;
+
+    @Column(nullable = false)
+    @NotNull(message = "Password required")
+    @Pattern(regexp = "^(?=.*[0-9])(?=.*[a-zA-Z])(?=\\S+$)[a-zA-Z1-9]{4,8}$", message = "Password does not match pattern.")
+    private String password;
+
+    @Column(nullable = false)
+    @NotNull
+    private Role role;
 
     @OneToOne(cascade = CascadeType.ALL, optional = false, orphanRemoval = true)
     private Cart cart;

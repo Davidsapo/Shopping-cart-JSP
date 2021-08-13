@@ -1,19 +1,14 @@
 package com.shopping.cart.controller;
 
 import com.shopping.cart.dto.CartDTO;
-import com.shopping.cart.request.AddToCartRequest;
-import com.shopping.cart.request.DeleteCartItemRequest;
-import com.shopping.cart.request.UpdateCartItemRequest;
 import com.shopping.cart.service.CartService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
-
-@RestController
-@RequestMapping("api/cart")
+@Controller
+@RequestMapping("shopping-cart/cart")
 public class CartController {
 
     private final CartService cartService;
@@ -23,30 +18,41 @@ public class CartController {
         this.cartService = cartService;
     }
 
-    @GetMapping
-    public ResponseEntity<CartDTO> fetchCart(@RequestParam Long personId) {
-        return ResponseEntity.ok(cartService.fetchCart(personId));
+    @GetMapping("/")
+    public String cartPage(Model model) {
+        model.addAttribute("cart", cartService.fetchCart());
+        return "cart";
     }
 
-    @PostMapping("/add-product")
-    public ResponseEntity<CartDTO> addProduct(@RequestBody @Valid AddToCartRequest request) {
-        return ResponseEntity.ok(cartService.addProduct(request.getPersonID(), request.getProductID(), request.getQuantity()));
+    @GetMapping("/add-product")
+    public String addProduct(@RequestParam Long productId) {
+        cartService.addProduct(productId, 1);
+        return "redirect:/shopping-cart/cart/";
     }
 
-    @PutMapping("/update-cart-item")
-    public ResponseEntity<CartDTO> updateCartItem(@RequestBody @Valid UpdateCartItemRequest request) {
-        return ResponseEntity.ok(cartService.updateCartItem(request.getPersonId(), request.getCartItemId(), request.getQuantity()));
+    @PostMapping("/update-cart")
+    public String updateCartItem(@ModelAttribute CartDTO cartDTO) {
+        cartService.updateCart(cartDTO);
+        return "redirect:/shopping-cart/cart/";
     }
 
-    @DeleteMapping("/delete-cart-item")
-    public ResponseEntity<CartDTO> deleteCartItem(@RequestBody @Valid DeleteCartItemRequest request) {
-        return ResponseEntity.ok(cartService.deleteCartItem(request.getPersonId(), request.getCartItemId()));
+    @GetMapping("/delete-cart-item")
+    public String deleteCartItem(@RequestParam Long cartItemId) {
+        cartService.deleteCartItem(cartItemId);
+        return "redirect:/shopping-cart/cart/";
     }
 
-    @DeleteMapping("/empty")
-    public ResponseEntity<HttpStatus> emptyCart(@RequestParam Long personId){
-        cartService.emptyCart(personId);
-        return ResponseEntity.ok().build();
+    @GetMapping("/empty")
+    public String emptyCart() {
+        cartService.emptyCart();
+        return "redirect:/shopping-cart/cart/";
+    }
+
+    @GetMapping("/order")
+    public String order(Model model) {
+        model.addAttribute("cart", cartService.fetchCart());
+        cartService.emptyCart();
+        return "order";
     }
 
 }
