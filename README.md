@@ -22,6 +22,7 @@ Registration is avilable(only as user).
 * Java core
 * Spring Boot
 * Spring JPA
+* Spring Security
 * Hibernate
 * Maven
 * H2 database
