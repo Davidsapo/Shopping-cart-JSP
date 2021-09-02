@@ -11,4 +11,11 @@ public interface PersonRepository extends JpaRepository<Person, Long> {
 
     boolean existsByEmailIgnoreCase(String email);
 
+    default Person deleteByIdWithReturn(Long id) {
+        Person person = getById(id);
+        deleteById(id);
+        return person;
+    }
+
+    boolean existsByUsernameIgnoreCase(String username);
 }

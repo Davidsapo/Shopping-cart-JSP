@@ -4,6 +4,7 @@ import com.shopping.cart.dto.ProductGetDTO;
 import com.shopping.cart.dto.ProductPostDTO;
 import com.shopping.cart.entity.Product;
 import com.shopping.cart.exception.exceptions.NonUniqueValueException;
+import com.shopping.cart.logger.AdvancedLogger;
 import com.shopping.cart.mapper.Mapper;
 import com.shopping.cart.repository.ProductRepository;
 import com.shopping.cart.request.UpdateProductRequest;
@@ -20,10 +21,10 @@ import java.util.Objects;
 @Service
 public class ProductServiceImpl implements ProductService {
 
+    private static final AdvancedLogger log = new AdvancedLogger(ProductServiceImpl.class);
+
     private final ProductRepository productRepository;
-
     private final IdValidator idValidator;
-
     private final Mapper mapper;
 
     @Autowired
@@ -36,13 +37,18 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public ProductGetDTO createProduct(ProductPostDTO productPostDTO) {
         if (productRepository.existsByNameIgnoreCase(productPostDTO.getName())) {
-            throw new NonUniqueValueException("Product", "name", productPostDTO.getName());
+            RuntimeException exception = new NonUniqueValueException("Product", "name", productPostDTO.getName());
+            log.warn("Fail to add product: " + productPostDTO, exception);
+            throw exception;
         }
-        return mapper.productToProductGetDTO(productRepository.save(mapper.productPostDTOToProduct(productPostDTO)));
+        Product newProduct = productRepository.save(mapper.productPostDTOToProduct(productPostDTO));
+        log.info("New " + newProduct + " added.");
+        return mapper.productToProductGetDTO(newProduct);
     }
 
     @Override
     public List<ProductGetDTO> getProducts() {
+        log.info("Request to get product list.");
         return mapper.productsToProductGetDTOs(productRepository.findAll());
     }
 
@@ -55,25 +61,41 @@ public class ProductServiceImpl implements ProductService {
     @Transactional
     @Override
     public ProductGetDTO updateProduct(Long id, UpdateProductRequest updateProductRequest) {
-        idValidator.validProductId(id);
-        Product productFromDB = productRepository.getById(id);
-        String updatedName = updateProductRequest.getName();
-        BigDecimal updatedPrice = updateProductRequest.getPrice();
-        if (!productFromDB.getName().equalsIgnoreCase(updatedName) && productRepository.existsByNameIgnoreCase(updateProductRequest.getName())) {
-            throw new NonUniqueValueException("Product", "name", updateProductRequest.getName());
+        Product productFromDB;
+        String olgInfo;
+        try {
+            idValidator.validProductId(id);
+            productFromDB = productRepository.getById(id);
+            olgInfo = productFromDB.toString();
+            String updatedName = updateProductRequest.getName();
+            BigDecimal updatedPrice = updateProductRequest.getPrice();
+            if (!productFromDB.getName().equalsIgnoreCase(updatedName) && productRepository.existsByNameIgnoreCase(updateProductRequest.getName())) {
+                throw new NonUniqueValueException("Product", "name", updateProductRequest.getName());
+            }
+            if (Objects.nonNull(updatedName)) {
+                productFromDB.setName(updatedName);
+            }
+            if (Objects.nonNull(updatedPrice)) {
+                productFromDB.setPrice(updatedPrice);
+            }
+        } catch (Exception e) {
+            log.warn("Fail to update product", e);
+            throw e;
         }
-        if (Objects.nonNull(updatedName)) {
-            productFromDB.setName(updatedName);
-        }
-        if (Objects.nonNull(updatedPrice)) {
-            productFromDB.setPrice(updatedPrice);
-        }
+        log.info(olgInfo + " updated to " + productFromDB);
         return mapper.productToProductGetDTO(productFromDB);
     }
 
     @Override
     public void delete(Long id) {
-        idValidator.validProductId(id);
-        productRepository.deleteById(id);
+        try {
+            idValidator.validProductId(id);
+            Product product = productRepository.deleteByIdWithReturn(id);
+            log.info("Product deleted. " + product);
+
+        } catch (Exception e) {
+            log.warn("Fail to delete product.", e);
+            throw e;
+        }
     }
 }

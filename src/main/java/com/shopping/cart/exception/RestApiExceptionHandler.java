@@ -2,6 +2,7 @@ package com.shopping.cart.exception;
 
 import com.shopping.cart.exception.exceptions.IdException;
 import com.shopping.cart.exception.exceptions.NonUniqueValueException;
+import com.shopping.cart.logger.AdvancedLogger;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.BindException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -13,6 +14,8 @@ import java.util.NoSuchElementException;
 @RestControllerAdvice
 public class RestApiExceptionHandler {
 
+    private static final AdvancedLogger log = new AdvancedLogger(RestApiExceptionHandler.class);
+
     @ExceptionHandler(BindException.class)
     public ModelAndView handleValidationException(BindException exception) {
         StringBuilder message = new StringBuilder();
@@ -22,6 +25,7 @@ public class RestApiExceptionHandler {
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.addObject("error", restApiException);
         modelAndView.setViewName("exception");
+        log.warn(message.toString(), exception);
         return modelAndView;
     }
 
@@ -54,8 +58,9 @@ public class RestApiExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ModelAndView handleException(Exception exception) {
+        log.error(exception.getMessage(), exception);
         RestApiException restApiException = new RestApiException(HttpStatus.INTERNAL_SERVER_ERROR,
-                exception.getClass().getName() + ": " + exception.getMessage());
+                "Something go wrong. Check log file.");
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.addObject("error", restApiException);
         modelAndView.setViewName("exception");

@@ -9,4 +9,9 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 
     boolean existsByNameIgnoreCase(String name);
 
+    default Product deleteByIdWithReturn(Long id) {
+        Product product = getById(id);
+        deleteById(id);
+        return product;
+    }
 }

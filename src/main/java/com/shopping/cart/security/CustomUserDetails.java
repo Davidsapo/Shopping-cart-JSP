@@ -18,7 +18,6 @@ public class CustomUserDetails implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        System.out.println(person.getRole().name());
         return Collections.singleton(new SimpleGrantedAuthority(person.getRole().name()));
     }
 
@@ -50,5 +49,10 @@ public class CustomUserDetails implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("%s(name = %s, surname = %s)", person.getRole(), person.getFirstName(), person.getLastName());
     }
 }

@@ -31,7 +31,7 @@ public class CartController {
     }
 
     @PostMapping("/update-cart")
-    public String updateCartItem(@ModelAttribute CartDTO cartDTO) {
+    public String updateCart(@ModelAttribute CartDTO cartDTO) {
         cartService.updateCart(cartDTO);
         return "redirect:/shopping-cart/cart/";
     }

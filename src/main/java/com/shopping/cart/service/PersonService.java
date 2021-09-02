@@ -9,17 +9,13 @@ import java.util.List;
 
 public interface PersonService {
 
-    PersonGetDTO addPerson(PersonPostDTO personPostDTO);
+    PersonGetDTO registerPerson(PersonPostDTO personPostDTO);
 
     List<PersonGetDTO> getAllPersons();
 
-    Person getPerson(Long id);
-
-    PersonGetDTO getAuthorizedPersonGetDTO();
-
     Person getAuthorizedPerson();
 
-    PersonGetDTO updatePerson(Long id, UpdatePersonRequest updatePersonRequest);
+    PersonGetDTO getAuthorizedPersonDto();
 
     void deletePerson(Long id);
 }

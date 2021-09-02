@@ -1,12 +1,14 @@
 package com.shopping.cart.dto;
 
 import lombok.Data;
+import lombok.ToString;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
 @Data
+@ToString(exclude = "password")
 public class PersonPostDTO {
 
     @NotNull(message = "First name can not be empty.")

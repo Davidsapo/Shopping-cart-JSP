@@ -10,8 +10,6 @@ public interface CartService {
 
     CartDTO updateCart(CartDTO cartDTO);
 
-    CartDTO updateCartItem(Long cartItemId, Integer quantity);
-
     CartDTO deleteCartItem(Long cartItemId);
 
     void emptyCart();
