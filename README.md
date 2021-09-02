@@ -1,7 +1,7 @@
 # Shopping-cart
 A full-stack "Shopping cart" web application.
 ### Get started
-Home page: localhost:8080/shopping-cart/
+Home page: http://localhost:8080/shopping-cart/
 <br>
 Database url: http://localhost:8080/h2-console
 <br>
