@@ -27,3 +27,4 @@ Registration is avilable(only as user).
 * Maven
 * H2 database
 * JSP
+* SLF4J
