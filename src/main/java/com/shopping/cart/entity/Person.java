@@ -48,7 +48,6 @@ public class Person {
 
     @Column(nullable = false)
     @NotNull(message = "Password required")
-    @Pattern(regexp = "^(?=.*[0-9])(?=.*[a-zA-Z])(?=\\S+$)[a-zA-Z1-9]{4,8}$", message = "Password does not match pattern.")
     private String password;
 
     @Column(nullable = false)

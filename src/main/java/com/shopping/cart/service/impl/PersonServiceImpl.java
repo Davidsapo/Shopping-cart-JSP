@@ -13,6 +13,7 @@ import com.shopping.cart.service.PersonService;
 import com.shopping.cart.validator.IdValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,11 +29,15 @@ public class PersonServiceImpl implements PersonService {
 
     private final Mapper mapper;
 
+    private final BCryptPasswordEncoder passwordEncoder;
+
     @Autowired
-    public PersonServiceImpl(PersonRepository personRepository, IdValidator idValidator, Mapper mapper) {
+    public PersonServiceImpl(PersonRepository personRepository, IdValidator idValidator, Mapper mapper,
+                             BCryptPasswordEncoder passwordEncoder) {
         this.personRepository = personRepository;
         this.idValidator = idValidator;
         this.mapper = mapper;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -43,6 +48,7 @@ public class PersonServiceImpl implements PersonService {
         Person person = mapper.personPostDTOToPerson(personPostDTO);
         person.setCart(new Cart());
         person.setRole(Role.USER);
+        person.setPassword(passwordEncoder.encode(person.getPassword()));
         return mapper.personToPersonGetDto(personRepository.save(person));
     }
 
